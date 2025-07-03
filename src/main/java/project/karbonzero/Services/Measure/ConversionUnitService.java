@@ -24,6 +24,21 @@ public class ConversionUnitService {
                 .collect(Collectors.toList());
     }
 
+    public ConversionUnitDTO insertConversionUnit (ConversionUnitDTO dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Conversion Unit can't be null or empty");
+        }
+
+        try {
+            ConversionUnitEntity entity = DTOToConversionUnit(dto);
+            ConversionUnitEntity savedEntity = repo.save(entity);
+
+            return ConversionUnitToDTO(savedEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t create Conversion Unit " + e.getMessage());
+        }
+    }
+
     private ConversionUnitDTO ConversionUnitToDTO(ConversionUnitEntity entity) {
         ConversionUnitDTO dto = new ConversionUnitDTO();
         dto.setIdConversionUnit(entity.getIdConversionUnit());
@@ -35,5 +50,15 @@ public class ConversionUnitService {
         return dto;
     }
 
+    private ConversionUnitEntity DTOToConversionUnit(ConversionUnitDTO dto) {
+        ConversionUnitEntity entity = new ConversionUnitEntity();
+        entity.setIdConversionUnit(dto.getIdConversionUnit());
+        entity.setIdInitialUnit(dto.getIdInitialUnit());
+        entity.setIdFinalUnit(dto.getIdFinalUnit());
+        entity.setIdResource(dto.getIdResource());
+        entity.setOperation(dto.getOperation());
+        entity.setConstant(dto.getConstant());
+        return entity;
+    }
 
 }

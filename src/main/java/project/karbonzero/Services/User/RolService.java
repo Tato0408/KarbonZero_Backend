@@ -41,7 +41,7 @@ public class RolService {
 
     }
 
-    public RolDTO RolToDTO (RolEntity entity) {
+    private RolDTO RolToDTO (RolEntity entity) {
         RolDTO dto = new RolDTO();
         dto.setIdRol(entity.getIdRol());
         dto.setName(entity.getName());
@@ -50,7 +50,7 @@ public class RolService {
         return dto;
     }
 
-    public RolEntity DTOToRol (RolDTO dto) {
+    private RolEntity DTOToRol (RolDTO dto) {
         RolEntity entity = new RolEntity();
         entity.setIdRol(dto.getIdRol());
         entity.setName(dto.getName());

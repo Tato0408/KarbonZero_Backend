@@ -2,6 +2,7 @@ package project.karbonzero.Controllers.Measure;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,11 +50,43 @@ public class MeasureController {
             MeasureDTO answer = measureService.insertMeasure(dto);
 
             if (answer == null) {
-                return responseBadRequest("Invalid data to create a measure object");
+                return responseBadRequest("Invalid data to create a Measure object");
             }
             return responseCreated(answer);
         } catch (Exception e) {
-            return responseServerError(e, "Can't create measure object");
+            return responseServerError(e, "Can't create Measure object");
         }
+    }
+
+    @PostMapping("insertMeasureUnit")
+    public ResponseEntity<Map<String, Object>> insertMeasureUnit (@Valid @RequestBody MeasureUnitDTO dto, HttpServletRequest request) {
+        try {
+            MeasureUnitDTO answer = measureUnitService.insertMeasureUnit(dto);
+
+            if (answer == null) {
+                return  responseBadRequest("Invalid data to create a Measure Unit object");
+            }
+
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't create a Measure Unit object");
+        }
+
+    }
+
+    @PostMapping("insertConversionUnit")
+    public ResponseEntity<Map<String, Object>> insertConversionUnit (@Valid @RequestBody ConversionUnitDTO dto, HttpServletRequest request) {
+        try {
+            ConversionUnitDTO answer = conversionUnitService.insertConversionUnit(dto);
+
+            if (answer == null) {
+                return  responseBadRequest("Invalid data to create a Conversion Unit object");
+            }
+
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't create a Conversion Unit object");
+        }
+
     }
 }

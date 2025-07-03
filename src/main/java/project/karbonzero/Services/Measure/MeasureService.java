@@ -26,7 +26,7 @@ public class MeasureService {
 
     public MeasureDTO insertMeasure (MeasureDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Measure cant't be null or empty");
+            throw new IllegalArgumentException("Measure can't be null or empty");
         }
 
         try {
@@ -35,18 +35,18 @@ public class MeasureService {
 
             return MeasureToDTO(savedEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Can`t create measure " + e.getMessage());
+            throw new RuntimeException("Can`t create Measure " + e.getMessage());
         }
     }
 
-    public MeasureDTO MeasureToDTO (MeasureEntity entity) {
+    private MeasureDTO MeasureToDTO (MeasureEntity entity) {
         MeasureDTO dto = new MeasureDTO();
         dto.setIdMeasure(entity.getIdMeasure());
         dto.setName(entity.getName());
         return dto;
     }
 
-    public MeasureEntity DTOToMeasure (MeasureDTO dto) {
+    private MeasureEntity DTOToMeasure (MeasureDTO dto) {
         MeasureEntity entity = new MeasureEntity();
         entity.setIdMeasure(dto.getIdMeasure());
         entity.setName(dto.getName());

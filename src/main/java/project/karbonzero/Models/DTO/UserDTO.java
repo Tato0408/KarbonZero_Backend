@@ -14,6 +14,8 @@ import lombok.ToString;
 public class UserDTO {
 
     private String idUser;
+
+    @NotBlank
     private String idRol;
 
     @NotBlank()

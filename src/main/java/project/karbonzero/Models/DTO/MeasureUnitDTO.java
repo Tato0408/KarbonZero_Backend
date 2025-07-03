@@ -13,6 +13,8 @@ import lombok.ToString;
 public class MeasureUnitDTO {
 
     private String idMeasureUnit;
+
+    @NotBlank
     private String idMeasure;
 
     @NotBlank

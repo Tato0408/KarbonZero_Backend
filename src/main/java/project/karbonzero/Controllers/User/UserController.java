@@ -52,7 +52,6 @@ public class UserController {
 
     @PostMapping("/insertRol")
     public ResponseEntity<Map<String, Object>> insertRol (@Valid @RequestBody RolDTO dto,  HttpServletRequest request) {
-
         try {
             RolDTO answer = rolService.insertRol(dto);
 

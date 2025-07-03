@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+import project.karbonzero.Entities.Measure.ConversionUnitEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
 
@@ -21,6 +22,21 @@ public class ConsumptionService {
         return consumptions.stream()
                 .map(this::ConsumptionToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ConsumptionDTO insertConsumption (ConsumptionDTO dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Consumption can't be null or empty");
+        }
+
+        try {
+            ConsumptionEntity entity = DTOToConsumption(dto);
+            ConsumptionEntity savedEntity = repo.save(entity);
+
+            return ConsumptionToDTO(savedEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t create Consumption " + e.getMessage());
+        }
     }
 
     private ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
@@ -44,5 +60,4 @@ public class ConsumptionService {
         entity.setCost(dto.getCost());
         return entity;
     }
-
 }

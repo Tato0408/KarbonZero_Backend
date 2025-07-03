@@ -1,9 +1,7 @@
 package project.karbonzero.Models.DTO;
 
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,10 +13,12 @@ import lombok.ToString;
 public class ResourcePurityDTO {
 
     private String idResourcePurity;
-    private String idResource;
 
     @NotBlank
-    @Min(0)
+    private String idResource;
+
+    @DecimalMin("0.01")
     @Max(1)
+    @NotNull
     private Double purity;
 }
