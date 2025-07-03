@@ -1,0 +1,48 @@
+package project.karbonzero.Services.Consumption;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+import project.karbonzero.Models.DTO.ConsumptionDTO;
+import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+public class ConsumptionService {
+    @Autowired
+    private ConsumptionRepository repo;
+
+    public List<ConsumptionDTO> getAllConsumptions(){
+        List<ConsumptionEntity> consumptions = repo.findAll();
+        return consumptions.stream()
+                .map(this::ConsumptionToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
+        ConsumptionDTO dto = new ConsumptionDTO();
+        dto.setIdConsumption(entity.getIdConsumption());
+        dto.setIdResourcePurity(entity.getIdResourcePurity());
+        dto.setIdUser(entity.getIdUser());
+        dto.setQuantity(entity.getQuantity());
+        dto.setConsumptionDate(entity.getConsumptionDate());
+        dto.setCost(entity.getCost());
+        return dto;
+    }
+
+    private ConsumptionEntity DTOToConsumption(ConsumptionDTO dto) {
+        ConsumptionEntity entity = new ConsumptionEntity();
+        entity.setIdConsumption(dto.getIdConsumption());
+        entity.setIdResourcePurity(dto.getIdResourcePurity());
+        entity.setIdUser(dto.getIdUser());
+        entity.setQuantity(dto.getQuantity());
+        entity.setConsumptionDate(dto.getConsumptionDate());
+        entity.setCost(dto.getCost());
+        return entity;
+    }
+
+}
