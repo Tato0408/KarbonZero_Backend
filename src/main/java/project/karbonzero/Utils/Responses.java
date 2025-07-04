@@ -1,10 +1,11 @@
 package project.karbonzero.Utils;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Responses {
@@ -16,8 +17,23 @@ public class Responses {
         ));
     }
 
+    public static ResponseEntity<Map<String, String>> responseBadRequestBinding (BindingResult bindingResult) {
+        Map<String, String> errors = new HashMap<>();
+        bindingResult.getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+
+        return ResponseEntity.badRequest().body(errors);
+    }
+
     public static ResponseEntity<Map<String, Object>> responseCreated (Object answer) {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "status", "success",
+                "data", answer
+        ));
+    }
+
+    public static ResponseEntity<Map<String, Object>> responseUpdated (Object answer) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of(
                 "status", "success",
                 "data", answer
         ));

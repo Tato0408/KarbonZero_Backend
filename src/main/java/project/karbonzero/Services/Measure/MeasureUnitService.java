@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
@@ -37,6 +38,24 @@ public class MeasureUnitService {
             return MeasureUnitToDTO(savedEntity);
         } catch (Exception e) {
             throw new RuntimeException("Can`t create measure Unit " + e.getMessage());
+        }
+    }
+
+    public MeasureUnitDTO updateMeasureUnit(String id, MeasureUnitDTO dto){
+        try {
+            if (repo.existsById(id)){
+                MeasureUnitEntity entity = repo.getById(id);
+
+                entity.setIdMeasure(dto.getIdMeasure());
+                entity.setName(dto.getName());
+
+                MeasureUnitEntity savedEntity = repo.save(entity);
+                return MeasureUnitToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The Measure Unit with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update Measure Unit " + e.getMessage());
         }
     }
 

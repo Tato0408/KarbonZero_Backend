@@ -40,6 +40,23 @@ public class MeasureService {
         }
     }
 
+    public MeasureDTO updateMeasure(String id, MeasureDTO dto){
+        try {
+            if (repo.existsById(id)){
+                MeasureEntity entity = repo.getById(id);
+
+                entity.setName(dto.getName());
+
+                MeasureEntity savedEntity = repo.save(entity);
+                return MeasureToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The Measure with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update Measure " + e.getMessage());
+        }
+    }
+
     public boolean deleteMeasure(String id){
         try {
             if (repo.existsById(id)){

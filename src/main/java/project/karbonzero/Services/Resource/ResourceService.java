@@ -39,6 +39,25 @@ public class ResourceService {
         }
     }
 
+    public ResourceDTO updateResource(String id, ResourceDTO dto){
+        try {
+            if (repo.existsById(id)){
+                ResourceEntity entity = repo.getById(id);
+
+                entity.setName(dto.getName());
+                entity.setIdMeasureUnit(dto.getIdMeasureUnit());
+                entity.setCarbonFootprint(dto.getCarbonFootprint());
+
+                ResourceEntity savedEntity = repo.save(entity);
+                return ResourceToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The Resource with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update Resource " + e.getMessage());
+        }
+    }
+
     public boolean deleteResource(String id){
         try {
             if (repo.existsById(id)){

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.ConversionUnitEntity;
+import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
+import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.ConversionUnitRepository;
 
 import java.util.List;
@@ -37,6 +39,27 @@ public class ConversionUnitService {
             return ConversionUnitToDTO(savedEntity);
         } catch (Exception e) {
             throw new RuntimeException("Can`t create Conversion Unit " + e.getMessage());
+        }
+    }
+
+    public ConversionUnitDTO updateConversionUnit(String id, ConversionUnitDTO dto){
+        try {
+            if (repo.existsById(id)){
+                ConversionUnitEntity entity = repo.getById(id);
+
+                entity.setIdInitialUnit(dto.getIdInitialUnit());
+                entity.setIdFinalUnit(dto.getIdFinalUnit());
+                entity.setIdResource(dto.getIdResource());
+                entity.setOperation(dto.getOperation());
+                entity.setConstant(dto.getConstant());
+
+                ConversionUnitEntity savedEntity = repo.save(entity);
+                return ConversionUnitToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The Conversion Unit with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update Conversion Unit " + e.getMessage());
         }
     }
 

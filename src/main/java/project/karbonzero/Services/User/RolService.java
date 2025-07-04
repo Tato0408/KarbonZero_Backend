@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.User.RolEntity;
+import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Repositories.User.RolRepository;
 
@@ -40,6 +42,24 @@ public class RolService {
             throw new RuntimeException("Can`t create role " + e.getMessage());
         }
 
+    }
+
+    public RolDTO updateRol(String id, RolDTO dto){
+        try {
+            if (repo.existsById(id)){
+                RolEntity entity = repo.getById(id);
+
+                entity.setName(dto.getName());
+                entity.setStatus(dto.getStatus());
+
+                RolEntity savedEntity = repo.save(entity);
+                return RolToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The Rol with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update Rol " + e.getMessage());
+        }
     }
 
     public boolean deleteRol(String id){

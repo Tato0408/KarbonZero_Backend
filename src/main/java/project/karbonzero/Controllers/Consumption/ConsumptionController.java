@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
+import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Services.Consumption.ConsumptionService;
 
 import java.util.List;
@@ -37,6 +39,28 @@ public class ConsumptionController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Can't create a Consumption object");
+        }
+    }
+
+    @PutMapping("/updateConsumption/{id}")
+    public ResponseEntity<?> updateConsumption(
+            @PathVariable String id,
+            @Valid @RequestBody ConsumptionDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            ConsumptionDTO answer = consumptionService.updateConsumption(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Consumption object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Consumption object");
         }
     }
 

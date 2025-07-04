@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Services.Resource.ResourcePurityService;
@@ -60,6 +62,50 @@ public class ResourceController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Can't create a Resource Purity object");
+        }
+    }
+
+    @PutMapping("/updateResource/{id}")
+    public ResponseEntity<?> updateResource(
+            @PathVariable String id,
+            @Valid @RequestBody ResourceDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            ResourceDTO answer = resourceService.updateResource(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Resource object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Resource object");
+        }
+    }
+
+    @PutMapping("/updateResourcePurity/{id}")
+    public ResponseEntity<?> updateResourcePurity(
+            @PathVariable String id,
+            @Valid @RequestBody ResourcePurityDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            ResourcePurityDTO answer = resourcePurityService.updateResourcePurity(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Resource Purity object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Resource Purity object");
         }
     }
 

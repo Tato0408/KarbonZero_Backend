@@ -1,11 +1,14 @@
 package project.karbonzero.Services.User;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
+import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Entities.User.UserEntity;
+import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.User.UserRepository;
 
@@ -47,6 +50,33 @@ public class UserService {
 
     }
 
+    public UserDTO updateUser(String id, UserDTO dto){
+        try {
+            if (repo.existsById(id)){
+                UserEntity entity = repo.getById(id);
+
+                entity.setUsername(dto.getUsername());
+                entity.setFirstName(dto.getFirstName());
+                entity.setLastName(dto.getLastName());
+                entity.setEmail(dto.getEmail());
+                entity.setIdRol(dto.getIdRol());
+
+                if (dto.getUserPassword() != null) {
+                    Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
+                    String hashedPassword = argon2PasswordEncoder.HashPassword(dto.getUserPassword());
+                    entity.setUserPassword(hashedPassword);
+                }
+
+                UserEntity savedEntity = repo.save(entity);
+                return UserToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The User with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update User " + e.getMessage());
+        }
+    }
+
     public boolean deleteUser(String id){
         try {
             if (repo.existsById(id)){
@@ -72,7 +102,6 @@ public class UserService {
         return dto;
     }
 
-    // Metodo para convertir DTO a Entidad
     private UserEntity DTOToUser(UserDTO dto) {
         UserEntity entity = new UserEntity();
         entity.setIdUser(dto.getIdUser());

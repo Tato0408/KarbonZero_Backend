@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import project.karbonzero.Config.Argon2PasswordEncoder;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
+import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
 
 import java.util.List;
@@ -36,6 +39,27 @@ public class ConsumptionService {
             return ConsumptionToDTO(savedEntity);
         } catch (Exception e) {
             throw new RuntimeException("Can`t create Consumption " + e.getMessage());
+        }
+    }
+
+    public ConsumptionDTO updateConsumption(String id, ConsumptionDTO dto){
+        try {
+            if (repo.existsById(id)){
+                ConsumptionEntity entity = repo.getById(id);
+
+                entity.setIdUser(dto.getIdUser());
+                entity.setIdResourcePurity(dto.getIdResourcePurity());
+                entity.setQuantity(dto.getQuantity());
+                entity.setCost(dto.getCost());
+                entity.setConsumptionDate(dto.getConsumptionDate());
+
+                ConsumptionEntity savedEntity = repo.save(entity);
+                return ConsumptionToDTO(savedEntity);
+            }
+            throw new IllegalArgumentException("The Consumption with the ID : " + id + " doesn't exists");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Can`t update Consumption " + e.getMessage());
         }
     }
 

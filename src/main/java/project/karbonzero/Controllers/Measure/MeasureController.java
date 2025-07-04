@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Models.DTO.MeasureDTO;
@@ -12,11 +13,12 @@ import project.karbonzero.Services.Measure.ConversionUnitService;
 import project.karbonzero.Services.Measure.MeasureService;
 import project.karbonzero.Services.Measure.MeasureUnitService;
 
-import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static project.karbonzero.Utils.Responses.*;
+import static project.karbonzero.Utils.Responses.responseCreated;
 
 @RestController
 @RequestMapping("/apiMeasure")
@@ -88,6 +90,72 @@ public class MeasureController {
             return responseServerError(e, "Can't create a Conversion Unit object");
         }
 
+    }
+
+    @PutMapping("/updateMeasure/{id}")
+    public ResponseEntity<?> updateMeasure(
+            @PathVariable String id,
+            @Valid @RequestBody MeasureDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            MeasureDTO answer = measureService.updateMeasure(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Measure object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Measure object");
+        }
+    }
+
+    @PutMapping("/updateMeasureUnit/{id}")
+    public ResponseEntity<?> updateMeasureUnit(
+            @PathVariable String id,
+            @Valid @RequestBody MeasureUnitDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            MeasureUnitDTO answer = measureUnitService.updateMeasureUnit(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Measure Unit object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Measure Unit object");
+        }
+    }
+
+    @PutMapping("/updateConversionUnit/{id}")
+    public ResponseEntity<?> updateConversionUnit(
+            @PathVariable String id,
+            @Valid @RequestBody ConversionUnitDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            ConversionUnitDTO answer = conversionUnitService.updateConversionUnit(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Conversion Unit object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Conversion Unit object");
+        }
     }
 
     @DeleteMapping("/deleteMeasure/{id}")

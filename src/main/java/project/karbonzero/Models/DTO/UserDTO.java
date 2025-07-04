@@ -31,7 +31,6 @@ public class UserDTO {
     @Size(max = 200)
     private String email;
 
-    @NotBlank()
     @Size(max = 200)
     private String userPassword;
 }

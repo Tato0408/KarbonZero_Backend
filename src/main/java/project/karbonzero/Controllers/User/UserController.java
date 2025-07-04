@@ -3,8 +3,10 @@ package project.karbonzero.Controllers.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Services.User.RolService;
@@ -59,6 +61,50 @@ public class UserController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Can`t create rol object");
+        }
+    }
+
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<?> updateUser(
+            @PathVariable String id,
+            @Valid @RequestBody UserDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            UserDTO answer = userService.updateUser(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a User object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a User object");
+        }
+    }
+
+    @PutMapping("/updateRol/{id}")
+    public ResponseEntity<?> updateRol(
+            @PathVariable String id,
+            @Valid @RequestBody RolDTO dto,
+            BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+
+        try {
+            RolDTO answer = rolService.updateRol(id, dto);
+
+            if (answer == null) {
+                return responseBadRequest("Invalid data to update a Rol object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Can't update a Rol object");
         }
     }
 
