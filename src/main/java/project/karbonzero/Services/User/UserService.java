@@ -2,6 +2,7 @@ package project.karbonzero.Services.User;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
 import project.karbonzero.Entities.User.UserEntity;
@@ -44,6 +45,19 @@ public class UserService {
             throw new RuntimeException("Can't create user " + e.getMessage());
         }
 
+    }
+
+    public boolean deleteUser(String id){
+        try {
+            if (repo.existsById(id)){
+                repo.deleteById(id);
+                return true;
+            } else{
+                return false;
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new EmptyResultDataAccessException("The User with the ID : " + id + " doesn't exists", 1);
+        }
     }
 
     private UserDTO UserToDTO(UserEntity entity) {

@@ -62,4 +62,34 @@ public class ResourceController {
             return responseServerError(e, "Can't create a Resource Purity object");
         }
     }
+
+    @DeleteMapping("/deleteResource/{id}")
+    public ResponseEntity<Map<String, Object>> deleteResource(@PathVariable String id) {
+        try {
+            if (!resourceService.deleteResource(id)) {
+                return responseNotFound("Resource not found");
+            }
+
+            return responseOK("Resource deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Resource object");
+        }
+    }
+
+    @DeleteMapping("/deleteResourcePurity/{id}")
+    public ResponseEntity<Map<String, Object>> deleteResourcePurity(@PathVariable String id) {
+        try {
+            if (!resourcePurityService.deleteResourcePurity(id)) {
+                return responseNotFound("Resource Purity not found");
+            }
+
+            return responseOK("Resource Purity deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Resource Purity object");
+        }
+    }
 }

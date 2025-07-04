@@ -1,10 +1,7 @@
 package project.karbonzero.Models.DTO;
 
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +20,6 @@ public class RolDTO {
 
     @Max(999)
     @Min(0)
+    @NotNull
     private Integer status;
 }

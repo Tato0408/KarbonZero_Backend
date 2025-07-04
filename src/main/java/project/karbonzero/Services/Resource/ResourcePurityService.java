@@ -2,10 +2,9 @@ package project.karbonzero.Services.Resource;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
-import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
 
@@ -38,6 +37,19 @@ public class ResourcePurityService {
             return ResourcePurityToDTO(savedEntity);
         } catch (Exception e) {
             throw new RuntimeException("Can`t create Resource Purity " + e.getMessage());
+        }
+    }
+
+    public boolean deleteResourcePurity(String id){
+        try {
+            if (repo.existsById(id)){
+                repo.deleteById(id);
+                return true;
+            } else{
+                return false;
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new EmptyResultDataAccessException("The Resource Purity with the ID : " + id + " doesn't exists", 1);
         }
     }
 

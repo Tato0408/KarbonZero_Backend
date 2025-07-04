@@ -2,6 +2,7 @@ package project.karbonzero.Services.Measure;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.ConversionUnitEntity;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
@@ -36,6 +37,19 @@ public class ConversionUnitService {
             return ConversionUnitToDTO(savedEntity);
         } catch (Exception e) {
             throw new RuntimeException("Can`t create Conversion Unit " + e.getMessage());
+        }
+    }
+
+    public boolean deleteConversionUnit(String id){
+        try {
+            if (repo.existsById(id)){
+                repo.deleteById(id);
+                return true;
+            } else{
+                return false;
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new EmptyResultDataAccessException("The Conversion Unit with the ID : " + id + " doesn't exists", 1);
         }
     }
 

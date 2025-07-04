@@ -1,8 +1,10 @@
 package project.karbonzero.Utils;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.Instant;
 import java.util.Map;
 
 public class Responses {
@@ -29,4 +31,18 @@ public class Responses {
         ));
     }
 
+    public static ResponseEntity<Map<String, Object>> responseNotFound (String message) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                "error", "not found",
+                    "mensaje", message,
+                    "timestamp", Instant.now().toString()
+        ));
+    }
+
+    public static ResponseEntity<Map<String, Object>> responseOK (String message) {
+        return ResponseEntity.ok().body(Map.of(
+                "status", "process completed",
+                "message", message
+        ));
+    }
 }

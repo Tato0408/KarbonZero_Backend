@@ -3,14 +3,12 @@ package project.karbonzero.Controllers.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Services.User.RolService;
 import project.karbonzero.Services.User.UserService;
-import project.karbonzero.Utils.Responses;
 
 import java.util.List;
 import java.util.Map;
@@ -61,6 +59,36 @@ public class UserController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Can`t create rol object");
+        }
+    }
+
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable String id) {
+        try {
+            if (!userService.deleteUser(id)) {
+                return responseNotFound("User not found");
+            }
+
+            return responseOK("User deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the User object");
+        }
+    }
+
+    @DeleteMapping("/deleteRol/{id}")
+    public ResponseEntity<Map<String, Object>> deleteRol(@PathVariable String id) {
+        try {
+            if (!rolService.deleteRol(id)) {
+                return responseNotFound("Rol not found");
+            }
+
+            return responseOK("Rol deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Rol object");
         }
     }
 }

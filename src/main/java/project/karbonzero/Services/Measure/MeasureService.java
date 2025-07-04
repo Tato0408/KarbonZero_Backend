@@ -2,6 +2,7 @@ package project.karbonzero.Services.Measure;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Models.DTO.MeasureDTO;
@@ -36,6 +37,19 @@ public class MeasureService {
             return MeasureToDTO(savedEntity);
         } catch (Exception e) {
             throw new RuntimeException("Can`t create Measure " + e.getMessage());
+        }
+    }
+
+    public boolean deleteMeasure(String id){
+        try {
+            if (repo.existsById(id)){
+                repo.deleteById(id);
+                return true;
+            } else{
+                return false;
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new EmptyResultDataAccessException("The Measure with the ID : " + id + " doesn't exists", 1);
         }
     }
 

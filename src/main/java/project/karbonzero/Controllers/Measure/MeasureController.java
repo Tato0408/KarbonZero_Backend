@@ -2,7 +2,6 @@ package project.karbonzero.Controllers.Measure;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +12,7 @@ import project.karbonzero.Services.Measure.ConversionUnitService;
 import project.karbonzero.Services.Measure.MeasureService;
 import project.karbonzero.Services.Measure.MeasureUnitService;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -88,5 +88,50 @@ public class MeasureController {
             return responseServerError(e, "Can't create a Conversion Unit object");
         }
 
+    }
+
+    @DeleteMapping("/deleteMeasure/{id}")
+    public ResponseEntity<Map<String, Object>> deleteMeasure(@PathVariable String id) {
+        try {
+            if (!measureService.deleteMeasure(id)) {
+                return responseNotFound("Measure not found");
+            }
+
+            return responseOK("Measure deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Measure object");
+        }
+    }
+
+    @DeleteMapping("/deleteMeasureUnit/{id}")
+    public ResponseEntity<Map<String, Object>> deleteMeasureUnit(@PathVariable String id) {
+        try {
+            if (!measureUnitService.deleteMeasureUnit(id)) {
+                return responseNotFound("Measure Unit not found");
+            }
+
+            return responseOK("Measure Unit deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Measure Unit object");
+        }
+    }
+
+    @DeleteMapping("/deleteConversionUnit/{id}")
+    public ResponseEntity<Map<String, Object>> deleteConversionUnit(@PathVariable String id) {
+        try {
+            if (!conversionUnitService.deleteConversionUnit(id)) {
+                return responseNotFound("Conversion Unit not found");
+            }
+
+            return responseOK("Conversion Unit deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Conversion Unit object");
+        }
     }
 }

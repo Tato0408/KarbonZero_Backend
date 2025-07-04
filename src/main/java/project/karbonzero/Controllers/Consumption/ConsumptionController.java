@@ -40,4 +40,18 @@ public class ConsumptionController {
         }
     }
 
+    @DeleteMapping("/deleteConsumption/{id}")
+    public ResponseEntity<Map<String, Object>> deleteConsumption(@PathVariable String id) {
+        try {
+            if (!consumptionService.deleteConsumption(id)) {
+                return responseNotFound("Consumption not found");
+            }
+
+            return responseOK("Consumption deleted with success");
+
+        } catch (Exception e) {
+            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
+            return responseServerError(e, "Can't delete the Consumption object");
+        }
+    }
 }
