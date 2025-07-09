@@ -10,6 +10,8 @@ import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
+import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
+import project.karbonzero.Repositories.User.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,10 @@ import java.util.stream.Collectors;
 public class ConsumptionService {
     @Autowired
     private ConsumptionRepository repo;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private ResourcePurityRepository resourcePurityRepo;
 
     public List<ConsumptionDTO> getAllConsumptions(){
         List<ConsumptionEntity> consumptions = repo.findAll();
@@ -47,8 +53,8 @@ public class ConsumptionService {
             if (repo.existsById(id)){
                 ConsumptionEntity entity = repo.getById(id);
 
-                entity.setIdUser(dto.getIdUser());
-                entity.setIdResourcePurity(dto.getIdResourcePurity());
+                entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
+                entity.setIdResourcePurity(resourcePurityRepo.getReferenceById(dto.getIdResourcePurity()));
                 entity.setQuantity(dto.getQuantity());
                 entity.setCost(dto.getCost());
                 entity.setConsumptionDate(dto.getConsumptionDate());
@@ -79,8 +85,8 @@ public class ConsumptionService {
     private ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
         ConsumptionDTO dto = new ConsumptionDTO();
         dto.setIdConsumption(entity.getIdConsumption());
-        dto.setIdResourcePurity(entity.getIdResourcePurity());
-        dto.setIdUser(entity.getIdUser());
+        dto.setIdResourcePurity(entity.getIdResourcePurity().getIdResourcePurity());
+        dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumptionDate());
         dto.setCost(entity.getCost());
@@ -90,8 +96,8 @@ public class ConsumptionService {
     private ConsumptionEntity DTOToConsumption(ConsumptionDTO dto) {
         ConsumptionEntity entity = new ConsumptionEntity();
         entity.setIdConsumption(dto.getIdConsumption());
-        entity.setIdResourcePurity(dto.getIdResourcePurity());
-        entity.setIdUser(dto.getIdUser());
+        entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
+        entity.setIdResourcePurity(resourcePurityRepo.getReferenceById(dto.getIdResourcePurity()));
         entity.setQuantity(dto.getQuantity());
         entity.setConsumptionDate(dto.getConsumptionDate());
         entity.setCost(dto.getCost());

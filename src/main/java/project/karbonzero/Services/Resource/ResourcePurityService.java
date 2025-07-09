@@ -10,6 +10,7 @@ import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.MeasureDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
+import project.karbonzero.Repositories.Resource.ResourceRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,8 @@ public class ResourcePurityService {
 
     @Autowired
     private ResourcePurityRepository repo;
+    @Autowired
+    private ResourceRepository resourceRepo;
 
     public List<ResourcePurityDTO> getAllResourcePurities() {
         List<ResourcePurityEntity> resourcePurities = repo.findAll();
@@ -48,7 +51,7 @@ public class ResourcePurityService {
             if (repo.existsById(id)){
                 ResourcePurityEntity entity = repo.getById(id);
 
-                entity.setIdResource(dto.getIdResource());
+                entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));
                 entity.setPurity(dto.getPurity());
 
                 ResourcePurityEntity savedEntity = repo.save(entity);
@@ -77,7 +80,7 @@ public class ResourcePurityService {
     private ResourcePurityDTO ResourcePurityToDTO(ResourcePurityEntity entity) {
         ResourcePurityDTO dto = new ResourcePurityDTO();
         dto.setIdResourcePurity(entity.getIdResourcePurity());
-        dto.setIdResource(entity.getIdResource());
+        dto.setIdResource(entity.getIdResource().getIdResource());
         dto.setPurity(entity.getPurity());
         return dto;
     }
@@ -85,7 +88,7 @@ public class ResourcePurityService {
     private ResourcePurityEntity DTOToResourcePurity(ResourcePurityDTO dto) {
         ResourcePurityEntity entity = new ResourcePurityEntity();
         entity.setIdResourcePurity(dto.getIdResourcePurity());
-        entity.setIdResource(dto.getIdResource());
+        entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));
         entity.setPurity(dto.getPurity());
         return entity;
     }

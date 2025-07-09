@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Services.User.RolService;
@@ -29,6 +28,11 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/getUserById/{id}")
+    public UserDTO getUserByID (@PathVariable String id) {
+        return userService.getUserById(id);
     }
 
     @GetMapping("/getAllRols")

@@ -9,6 +9,7 @@ import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.ConversionUnitRepository;
+import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ public class ConversionUnitService {
 
     @Autowired
     private ConversionUnitRepository repo;
+    @Autowired
+    private MeasureUnitRepository measureUnitRepo;
 
     public List<ConversionUnitDTO> getAllConversionUnits() {
         List<ConversionUnitEntity> conversionUnits = repo.findAll();
@@ -47,8 +50,8 @@ public class ConversionUnitService {
             if (repo.existsById(id)){
                 ConversionUnitEntity entity = repo.getById(id);
 
-                entity.setIdInitialUnit(dto.getIdInitialUnit());
-                entity.setIdFinalUnit(dto.getIdFinalUnit());
+                entity.setIdInitialUnit(measureUnitRepo.getReferenceById(dto.getIdInitialUnit()));
+                entity.setIdFinalUnit(measureUnitRepo.getReferenceById(dto.getIdFinalUnit()));
                 entity.setIdResource(dto.getIdResource());
                 entity.setOperation(dto.getOperation());
                 entity.setConstant(dto.getConstant());
@@ -79,8 +82,8 @@ public class ConversionUnitService {
     private ConversionUnitDTO ConversionUnitToDTO(ConversionUnitEntity entity) {
         ConversionUnitDTO dto = new ConversionUnitDTO();
         dto.setIdConversionUnit(entity.getIdConversionUnit());
-        dto.setIdInitialUnit(entity.getIdInitialUnit());
-        dto.setIdFinalUnit(entity.getIdFinalUnit());
+        dto.setIdInitialUnit(entity.getIdInitialUnit().getIdMeasureUnit());
+        dto.setIdFinalUnit(entity.getIdFinalUnit().getIdMeasureUnit());
         dto.setIdResource(entity.getIdResource());
         dto.setOperation(entity.getOperation());
         dto.setConstant(entity.getConstant());
@@ -90,8 +93,8 @@ public class ConversionUnitService {
     private ConversionUnitEntity DTOToConversionUnit(ConversionUnitDTO dto) {
         ConversionUnitEntity entity = new ConversionUnitEntity();
         entity.setIdConversionUnit(dto.getIdConversionUnit());
-        entity.setIdInitialUnit(dto.getIdInitialUnit());
-        entity.setIdFinalUnit(dto.getIdFinalUnit());
+        entity.setIdInitialUnit(measureUnitRepo.getReferenceById(dto.getIdInitialUnit()));
+        entity.setIdFinalUnit(measureUnitRepo.getReferenceById(dto.getIdFinalUnit()));
         entity.setIdResource(dto.getIdResource());
         entity.setOperation(dto.getOperation());
         entity.setConstant(dto.getConstant());

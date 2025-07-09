@@ -1,15 +1,14 @@
 package project.karbonzero.Entities.Consumption;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
-import org.springframework.format.annotation.DateTimeFormat;
+import project.karbonzero.Entities.Resource.ResourceEntity;
+import project.karbonzero.Entities.Resource.ResourcePurityEntity;
+import project.karbonzero.Entities.User.UserEntity;
 
 @Entity
 @Table(name = "TBCONSUMPTIONS")
@@ -22,11 +21,13 @@ public class ConsumptionEntity {
     @Column(name = "IDCONSUMPTION")
     private String idConsumption;
 
-    @Column(name = "IDRESOURCEPURITY", nullable = false)
-    private String idResourcePurity;
+    @ManyToOne
+    @JoinColumn(name = "IDRESOURCEPURITY", nullable = false)
+    private ResourcePurityEntity idResourcePurity;
 
-    @Column(name = "IDUSER", nullable = false)
-    private String idUser;
+    @ManyToOne
+    @JoinColumn(name = "IDUSER", nullable = false)
+    private UserEntity idUser;
 
     @Column(name = "QUANTITY", nullable = false)
     private Double quantity;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
+import project.karbonzero.Repositories.Measure.MeasureRepository;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public class MeasureUnitService {
 
     @Autowired
     private MeasureUnitRepository repo;
+    @Autowired
+    private MeasureRepository measureRepo;
 
     public List<MeasureUnitDTO> getAllMeasureUnits () {
         List<MeasureUnitEntity> measureUnits = repo.findAll();
@@ -46,7 +49,7 @@ public class MeasureUnitService {
             if (repo.existsById(id)){
                 MeasureUnitEntity entity = repo.getById(id);
 
-                entity.setIdMeasure(dto.getIdMeasure());
+                entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));
                 entity.setName(dto.getName());
 
                 MeasureUnitEntity savedEntity = repo.save(entity);
@@ -75,7 +78,7 @@ public class MeasureUnitService {
     private MeasureUnitDTO MeasureUnitToDTO(MeasureUnitEntity entity) {
         MeasureUnitDTO dto = new MeasureUnitDTO();
         dto.setIdMeasureUnit(entity.getIdMeasureUnit());
-        dto.setIdMeasure(entity.getIdMeasure());
+        dto.setIdMeasure(entity.getIdMeasure().getIdMeasure());
         dto.setName(entity.getName());
         return dto;
     }
@@ -83,7 +86,7 @@ public class MeasureUnitService {
     private MeasureUnitEntity DTOToMeasureUnit(MeasureUnitDTO dto) {
         MeasureUnitEntity entity = new MeasureUnitEntity();
         entity.setIdMeasureUnit(dto.getIdMeasureUnit());
-        entity.setIdMeasure(dto.getIdMeasure());
+        entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));
         entity.setName(dto.getName());
         return entity;
     }

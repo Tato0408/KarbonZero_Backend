@@ -5,9 +5,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Check;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
+import project.karbonzero.Entities.Measure.MeasureUnitEntity;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "TBRESOURCES")
@@ -20,12 +21,16 @@ public class ResourceEntity {
     @Column(name = "IDRESOURCE")
     private String idResource;
 
-    @Column(name = "IDMEASUREUNIT", nullable = false)
-    private String idMeasureUnit;
+    @ManyToOne
+    @JoinColumn(name = "IDMEASUREUNIT", nullable = false)
+    private MeasureUnitEntity idMeasureUnit;
 
     @Column(name = "NAME", nullable = false, length = 200)
     private String name;
 
     @Column(name = "CARBONFOOTPRINT", nullable = false)
     private Double carbonFootprint;
+
+    @OneToMany(mappedBy = "idResource")
+    private Set<ResourcePurityEntity> resourcePurities;
 }

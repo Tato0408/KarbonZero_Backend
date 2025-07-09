@@ -1,18 +1,15 @@
 package project.karbonzero.Services.User;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
-import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Entities.User.UserEntity;
-import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Models.DTO.UserDTO;
+import project.karbonzero.Repositories.User.RolRepository;
 import project.karbonzero.Repositories.User.UserRepository;
 
-import javax.management.RuntimeErrorException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +18,19 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     private UserRepository repo;
+    @Autowired
+    private RolRepository rolRepo;
 
     public List<UserDTO> getAllUsers(){
         List<UserEntity> usuarios = repo.findAll();
         return usuarios.stream()
                 .map(this::UserToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public UserDTO getUserById (String id) {
+        UserEntity entity = repo.getById(id);
+        return  UserToDTO(entity);
     }
 
     public UserDTO insertUser(UserDTO dto) {
@@ -59,7 +63,7 @@ public class UserService {
                 entity.setFirstName(dto.getFirstName());
                 entity.setLastName(dto.getLastName());
                 entity.setEmail(dto.getEmail());
-                entity.setIdRol(dto.getIdRol());
+                entity.setIdRol(rolRepo.getReferenceById(dto.getIdRol()));
 
                 if (dto.getUserPassword() != null) {
                     Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
@@ -93,7 +97,7 @@ public class UserService {
     private UserDTO UserToDTO(UserEntity entity) {
         UserDTO dto = new UserDTO();
         dto.setIdUser(entity.getIdUser());
-        dto.setIdRol(entity.getIdRol());
+        dto.setIdRol(entity.getIdRol().getIdRol());
         dto.setUsername(entity.getUsername());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
@@ -105,7 +109,7 @@ public class UserService {
     private UserEntity DTOToUser(UserDTO dto) {
         UserEntity entity = new UserEntity();
         entity.setIdUser(dto.getIdUser());
-        entity.setIdRol(dto.getIdRol());
+        entity.setIdRol(rolRepo.getReferenceById(dto.getIdRol()));
         entity.setUsername(dto.getUsername());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());

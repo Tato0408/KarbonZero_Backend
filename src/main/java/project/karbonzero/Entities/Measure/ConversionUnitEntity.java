@@ -1,14 +1,11 @@
 package project.karbonzero.Entities.Measure;
 
-import com.sun.jdi.Field;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @Table(name = "TBCONVERSIONUNITS")
@@ -21,11 +18,13 @@ public class ConversionUnitEntity {
     @Column(name = "IDCONVERSIONUNIT")
     private String idConversionUnit;
 
-    @Column(name = "IDINITIALUNIT", nullable = false)
-    private String idInitialUnit;
+    @ManyToOne
+    @JoinColumn(name = "IDINITIALUNIT", nullable = false)
+    private MeasureUnitEntity idInitialUnit;
 
-    @Column(name = "IDFINALUNIT", nullable = false)
-    private String idFinalUnit;
+    @ManyToOne
+    @JoinColumn(name = "IDFINALUNIT", nullable = false)
+    private MeasureUnitEntity idFinalUnit;
 
     @Column(name = "IDRESOURCE", nullable = true)
     private String idResource;

@@ -27,6 +27,11 @@ public class RolService {
                 .collect(Collectors.toList());
     }
 
+    public RolDTO getRolById (String id) {
+        RolEntity entity =  repo.getById(id);
+        return RolToDTO(entity);
+    }
+
     public RolDTO insertRol (RolDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Rol cant't be null or empty");
@@ -84,7 +89,7 @@ public class RolService {
         return dto;
     }
 
-    private RolEntity DTOToRol (RolDTO dto) {
+    public RolEntity DTOToRol (RolDTO dto) {
         RolEntity entity = new RolEntity();
         entity.setIdRol(dto.getIdRol());
         entity.setName(dto.getName());

@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
+import project.karbonzero.Entities.Resource.ResourceEntity;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "TBMEASUREUNITS")
@@ -19,9 +21,13 @@ public class MeasureUnitEntity {
     @Column(name = "IDMEASUREUNIT")
     private String idMeasureUnit;
 
-    @Column(name = "IDMEASURE", nullable = false)
-    private String idMeasure;
+    @ManyToOne
+    @JoinColumn(name = "IDMEASURE", nullable = false)
+    private MeasureEntity idMeasure;
 
     @Column(name = "NAME", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "idMeasureUnit")
+    private Set<ResourceEntity> resourcesSet;
 }

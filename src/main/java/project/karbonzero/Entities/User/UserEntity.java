@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
+import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "TBUSERS")
@@ -19,8 +21,9 @@ public class UserEntity {
     @Column(name = "IDUSER")
     private String idUser;
 
-    @Column(name = "IDROL", nullable = false)
-    private String idRol;
+    @ManyToOne
+    @JoinColumn(name="IDROL", nullable=false)
+    private RolEntity idRol;
 
     @Column(name = "USERNAME", nullable = false, length = 200)
     private String username;
@@ -36,4 +39,7 @@ public class UserEntity {
 
     @Column(name = "USERPASSWORD", nullable = false, length = 200)
     private String userPassword;
+
+    @OneToMany(mappedBy = "idUser")
+    private Set<ConsumptionEntity> consumptionsSet;
 }

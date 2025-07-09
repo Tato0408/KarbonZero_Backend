@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "TBROLS")
@@ -24,4 +25,7 @@ public class RolEntity {
 
     @Column(name = "STATUS", nullable = false)
     private Integer status;
+
+    @OneToMany(mappedBy="idRol")
+    private Set<UserEntity> usersSet;
 }

@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Models.DTO.ResourceDTO;
+import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 public class ResourceService {
     @Autowired
     private ResourceRepository repo;
+    @Autowired
+    private MeasureUnitRepository measureUnitRepo;
 
     public List<ResourceDTO> getAllResources () {
         List<ResourceEntity> resources = repo.findAll();
@@ -45,7 +48,7 @@ public class ResourceService {
                 ResourceEntity entity = repo.getById(id);
 
                 entity.setName(dto.getName());
-                entity.setIdMeasureUnit(dto.getIdMeasureUnit());
+                entity.setIdMeasureUnit(measureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
                 entity.setCarbonFootprint(dto.getCarbonFootprint());
 
                 ResourceEntity savedEntity = repo.save(entity);
@@ -74,7 +77,7 @@ public class ResourceService {
     private ResourceDTO ResourceToDTO(ResourceEntity entity) {
         ResourceDTO dto = new ResourceDTO();
         dto.setIdResource(entity.getIdResource());
-        dto.setIdMeasureUnit(entity.getIdMeasureUnit());
+        dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
         dto.setName(entity.getName());
         dto.setCarbonFootprint(entity.getCarbonFootprint());
 
@@ -84,7 +87,7 @@ public class ResourceService {
     private ResourceEntity DTOToResource(ResourceDTO dto) {
         ResourceEntity entity = new ResourceEntity();
         entity.setIdResource(dto.getIdResource());
-        entity.setIdMeasureUnit(dto.getIdMeasureUnit());
+        entity.setIdMeasureUnit(measureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
         entity.setName(dto.getName());
         entity.setCarbonFootprint(dto.getCarbonFootprint());
 

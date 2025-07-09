@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UuidGenerator;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "TBMEASURES")
@@ -20,5 +21,8 @@ public class MeasureEntity {
     private String idMeasure;
 
     @Column(name = "NAME", nullable = false, unique = true)
-    private  String name;
+    private String name;
+
+    @OneToMany(mappedBy = "idMeasure")
+    private Set<MeasureUnitEntity> measureUnitsSet;
 }
