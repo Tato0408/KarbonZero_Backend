@@ -4,11 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import project.karbonzero.Config.Argon2PasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
-import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
-import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
 import project.karbonzero.Repositories.User.UserRepository;
@@ -20,17 +18,25 @@ import java.util.stream.Collectors;
 @Service
 public class ConsumptionService {
     @Autowired
-    private ConsumptionRepository repo;
+    private static ConsumptionRepository repo;
     @Autowired
-    private UserRepository userRepo;
+    private static UserRepository userRepo;
     @Autowired
-    private ResourcePurityRepository resourcePurityRepo;
+    private static ResourcePurityRepository resourcePurityRepo;
 
     public List<ConsumptionDTO> getAllConsumptions(){
         List<ConsumptionEntity> consumptions = repo.findAll();
         return consumptions.stream()
-                .map(this::ConsumptionToDTO)
+                .map(ConsumptionService::ConsumptionToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ConsumptionDTO getConsumptionById (String id) {
+        if (repo.existsById(id)) {
+            ConsumptionEntity entity = repo.getReferenceById(id);
+            return ConsumptionToDTO(entity);
+        }
+        return null;
     }
 
     public ConsumptionDTO insertConsumption (ConsumptionDTO dto) {
@@ -51,7 +57,7 @@ public class ConsumptionService {
     public ConsumptionDTO updateConsumption(String id, ConsumptionDTO dto){
         try {
             if (repo.existsById(id)){
-                ConsumptionEntity entity = repo.getById(id);
+                ConsumptionEntity entity = repo.getReferenceById(id);
 
                 entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
                 entity.setIdResourcePurity(resourcePurityRepo.getReferenceById(dto.getIdResourcePurity()));
@@ -82,7 +88,7 @@ public class ConsumptionService {
         }
     }
 
-    private ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
+    public static ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
         ConsumptionDTO dto = new ConsumptionDTO();
         dto.setIdConsumption(entity.getIdConsumption());
         dto.setIdResourcePurity(entity.getIdResourcePurity().getIdResourcePurity());
@@ -93,7 +99,7 @@ public class ConsumptionService {
         return dto;
     }
 
-    private ConsumptionEntity DTOToConsumption(ConsumptionDTO dto) {
+    public static ConsumptionEntity DTOToConsumption(ConsumptionDTO dto) {
         ConsumptionEntity entity = new ConsumptionEntity();
         entity.setIdConsumption(dto.getIdConsumption());
         entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));

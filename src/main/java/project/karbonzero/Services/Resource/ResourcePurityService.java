@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.MeasureDTO;
@@ -31,6 +32,14 @@ public class ResourcePurityService {
                 .collect(Collectors.toList());
     }
 
+    public ResourcePurityDTO getResourcePurityById (String id) {
+        if (repo.existsById(id)) {
+            ResourcePurityEntity entity = repo.getReferenceById(id);
+            return  ResourcePurityToDTO(entity);
+        }
+        return null;
+    }
+
     public ResourcePurityDTO insertResourcePurity(ResourcePurityDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Resource Purity can't be null or empty");
@@ -49,7 +58,7 @@ public class ResourcePurityService {
     public ResourcePurityDTO updateResourcePurity(String id, ResourcePurityDTO dto){
         try {
             if (repo.existsById(id)){
-                ResourcePurityEntity entity = repo.getById(id);
+                ResourcePurityEntity entity = repo.getReferenceById(id);
 
                 entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));
                 entity.setPurity(dto.getPurity());

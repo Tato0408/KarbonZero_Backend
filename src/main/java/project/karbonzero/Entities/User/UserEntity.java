@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
-
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,5 +41,5 @@ public class UserEntity {
     private String userPassword;
 
     @OneToMany(mappedBy = "idUser")
-    private Set<ConsumptionEntity> consumptionsSet;
+    private List<ConsumptionEntity> consumptionsList;
 }

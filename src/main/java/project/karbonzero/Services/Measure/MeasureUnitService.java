@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.MeasureRepository;
@@ -29,6 +28,14 @@ public class MeasureUnitService {
                 .collect(Collectors.toList());
     }
 
+    public MeasureUnitDTO getMeasureUnitById (String id) {
+        if (repo.existsById(id)) {
+            MeasureUnitEntity entity = repo.getReferenceById(id);
+            return MeasureUnitToDTO(entity);
+        }
+        return null;
+    }
+
     public MeasureUnitDTO insertMeasureUnit (MeasureUnitDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Measure Unit can't be null or empty");
@@ -47,7 +54,7 @@ public class MeasureUnitService {
     public MeasureUnitDTO updateMeasureUnit(String id, MeasureUnitDTO dto){
         try {
             if (repo.existsById(id)){
-                MeasureUnitEntity entity = repo.getById(id);
+                MeasureUnitEntity entity = repo.getReferenceById(id);
 
                 entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));
                 entity.setName(dto.getName());

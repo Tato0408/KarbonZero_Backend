@@ -27,6 +27,14 @@ public class ResourceService {
                 .collect(Collectors.toList());
     }
 
+    public ResourceDTO getResourceById (String id) {
+        if (repo.existsById(id)) {
+            ResourceEntity entity = repo.getReferenceById(id);
+            return ResourceToDTO(entity);
+        }
+        return null;
+    }
+
     public ResourceDTO insertResource (ResourceDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Resource can't be null or empty");
@@ -45,7 +53,7 @@ public class ResourceService {
     public ResourceDTO updateResource(String id, ResourceDTO dto){
         try {
             if (repo.existsById(id)){
-                ResourceEntity entity = repo.getById(id);
+                ResourceEntity entity = repo.getReferenceById(id);
 
                 entity.setName(dto.getName());
                 entity.setIdMeasureUnit(measureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));

@@ -13,7 +13,6 @@ import project.karbonzero.Services.Measure.ConversionUnitService;
 import project.karbonzero.Services.Measure.MeasureService;
 import project.karbonzero.Services.Measure.MeasureUnitService;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,14 +35,29 @@ public class MeasureController {
         return measureService.getAllMeasures();
     }
 
+    @GetMapping("/getMeasureById/{id}")
+    public MeasureDTO getMeasureByID (@PathVariable String id) {
+        return measureService.getMeasureById(id);
+    }
+
     @GetMapping("/getAllMeasureUnits")
     public List<MeasureUnitDTO> getAllMeasureUnits () {
         return  measureUnitService.getAllMeasureUnits();
     }
 
+    @GetMapping("/getMeasureUnitById/{id}")
+    public MeasureUnitDTO getMeasureUnitById (@PathVariable String id) {
+        return measureUnitService.getMeasureUnitById(id);
+    }
+
     @GetMapping("/getAllConversionUnits")
     public List<ConversionUnitDTO> getAllConversionUnits () {
         return conversionUnitService.getAllConversionUnits();
+    }
+
+    @GetMapping("/getConversionUnitById/{id}")
+    public ConversionUnitDTO getConversionUnitById (@PathVariable String id) {
+        return conversionUnitService.getConversionUnitById(id);
     }
 
     @PostMapping("/insertMeasure")

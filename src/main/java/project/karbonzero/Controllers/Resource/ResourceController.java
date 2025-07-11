@@ -30,9 +30,19 @@ public class ResourceController {
         return resourceService.getAllResources();
     }
 
+    @GetMapping("/getResourceById/{id}")
+    public ResourceDTO getResourceById (@PathVariable String id) {
+        return resourceService.getResourceById(id);
+    }
+
     @GetMapping("/getAllResourcePurities")
     public List<ResourcePurityDTO> getAllResourcePurities () {
         return  resourcePurityService.getAllResourcePurities();
+    }
+
+    @GetMapping("/getResourcePurityById/{id}")
+    public ResourcePurityDTO getResourcePurityById (@PathVariable String id) {
+        return resourcePurityService.getResourcePurityById(id);
     }
 
     @PostMapping("/insertResource")

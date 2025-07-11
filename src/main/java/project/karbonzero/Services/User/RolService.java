@@ -28,8 +28,11 @@ public class RolService {
     }
 
     public RolDTO getRolById (String id) {
-        RolEntity entity =  repo.getById(id);
-        return RolToDTO(entity);
+        if (repo.existsById(id)) {
+            RolEntity entity =  repo.getReferenceById(id);
+            return RolToDTO(entity);
+        }
+        return null;
     }
 
     public RolDTO insertRol (RolDTO dto) {
@@ -52,7 +55,7 @@ public class RolService {
     public RolDTO updateRol(String id, RolDTO dto){
         try {
             if (repo.existsById(id)){
-                RolEntity entity = repo.getById(id);
+                RolEntity entity = repo.getReferenceById(id);
 
                 entity.setName(dto.getName());
                 entity.setStatus(dto.getStatus());

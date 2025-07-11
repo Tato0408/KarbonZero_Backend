@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import project.karbonzero.Entities.Measure.ConversionUnitEntity;
-import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
-import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.ConversionUnitRepository;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 
@@ -23,11 +22,19 @@ public class ConversionUnitService {
     @Autowired
     private MeasureUnitRepository measureUnitRepo;
 
-    public List<ConversionUnitDTO> getAllConversionUnits() {
+    public List<ConversionUnitDTO> getAllConversionUnits () {
         List<ConversionUnitEntity> conversionUnits = repo.findAll();
         return conversionUnits.stream()
                 .map(this::ConversionUnitToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ConversionUnitDTO getConversionUnitById (String id) {
+        if (repo.existsById(id)) {
+            ConversionUnitEntity entity = repo.getReferenceById(id);
+            return ConversionUnitToDTO(entity);
+        }
+        return null;
     }
 
     public ConversionUnitDTO insertConversionUnit (ConversionUnitDTO dto) {
@@ -48,7 +55,7 @@ public class ConversionUnitService {
     public ConversionUnitDTO updateConversionUnit(String id, ConversionUnitDTO dto){
         try {
             if (repo.existsById(id)){
-                ConversionUnitEntity entity = repo.getById(id);
+                ConversionUnitEntity entity = repo.getReferenceById(id);
 
                 entity.setIdInitialUnit(measureUnitRepo.getReferenceById(dto.getIdInitialUnit()));
                 entity.setIdFinalUnit(measureUnitRepo.getReferenceById(dto.getIdFinalUnit()));

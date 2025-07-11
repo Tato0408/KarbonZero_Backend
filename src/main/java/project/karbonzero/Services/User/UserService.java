@@ -5,12 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
+import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Entities.User.UserEntity;
+import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.User.RolRepository;
 import project.karbonzero.Repositories.User.UserRepository;
+import project.karbonzero.Services.Consumption.ConsumptionService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,8 +33,19 @@ public class UserService {
     }
 
     public UserDTO getUserById (String id) {
-        UserEntity entity = repo.getById(id);
-        return  UserToDTO(entity);
+        if (repo.existsById(id)){
+            UserEntity entity = repo.getReferenceById(id);
+            return  UserToDTO(entity);
+        }
+        return null;
+    }
+
+    public List<ConsumptionDTO> getUserConsumptions (String id) {
+        UserEntity entity = repo.getReferenceById(id);
+
+        return entity.getConsumptionsList().stream()
+                .map(ConsumptionService::ConsumptionToDTO)
+                .collect(Collectors.toList());
     }
 
     public UserDTO insertUser(UserDTO dto) {
@@ -57,7 +72,7 @@ public class UserService {
     public UserDTO updateUser(String id, UserDTO dto){
         try {
             if (repo.existsById(id)){
-                UserEntity entity = repo.getById(id);
+                UserEntity entity = repo.getReferenceById(id);
 
                 entity.setUsername(dto.getUsername());
                 entity.setFirstName(dto.getFirstName());

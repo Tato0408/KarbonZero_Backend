@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Services.Consumption.ConsumptionService;
@@ -27,13 +28,18 @@ public class ConsumptionController {
         return consumptionService.getAllConsumptions();
     }
 
+    @GetMapping("/getConsumptionById/{id}")
+    public ConsumptionDTO getConsumptionById (@PathVariable String id) {
+        return consumptionService.getConsumptionById(id);
+    }
+
     @PostMapping("/insertConsumption")
     public ResponseEntity<Map<String, Object>> insertConsumption (@Valid @RequestBody ConsumptionDTO dto, HttpServletRequest request) {
         try {
             ConsumptionDTO answer = consumptionService.insertConsumption(dto);
 
             if (answer == null) {
-                return  responseBadRequest("Invalid data to create a Consumption object");
+                return responseBadRequest("Invalid data to create a Consumption object");
             }
 
             return responseCreated(answer);
