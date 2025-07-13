@@ -79,14 +79,14 @@ public class MeasureService {
         }
     }
 
-    private MeasureDTO MeasureToDTO (MeasureEntity entity) {
+    public MeasureDTO MeasureToDTO (MeasureEntity entity) {
         MeasureDTO dto = new MeasureDTO();
         dto.setIdMeasure(entity.getIdMeasure());
         dto.setName(entity.getName());
         return dto;
     }
 
-    private MeasureEntity DTOToMeasure (MeasureDTO dto) {
+    public MeasureEntity DTOToMeasure (MeasureDTO dto) {
         MeasureEntity entity = new MeasureEntity();
         entity.setIdMeasure(dto.getIdMeasure());
         entity.setName(dto.getName());

@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,5 +28,5 @@ public class RolEntity {
     private Integer status;
 
     @OneToMany(mappedBy="idRol")
-    private Set<UserEntity> usersSet;
+    private List<UserEntity> usersList;
 }

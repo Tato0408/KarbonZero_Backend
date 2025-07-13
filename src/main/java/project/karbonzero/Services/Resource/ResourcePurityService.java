@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
+import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.MeasureDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
+import project.karbonzero.Services.Consumption.ConsumptionService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,13 @@ public class ResourcePurityService {
             return  ResourcePurityToDTO(entity);
         }
         return null;
+    }
+
+    public List<ConsumptionDTO> getResourcePurityConsumptions (String id) {
+        ResourcePurityEntity entity = repo.getReferenceById(id);
+        return entity.getConsumptionsList().stream()
+                .map(new ConsumptionService()::ConsumptionToDTO)
+                .collect(Collectors.toList());
     }
 
     public ResourcePurityDTO insertResourcePurity(ResourcePurityDTO dto) {
@@ -86,7 +95,7 @@ public class ResourcePurityService {
         }
     }
 
-    private ResourcePurityDTO ResourcePurityToDTO(ResourcePurityEntity entity) {
+    public ResourcePurityDTO ResourcePurityToDTO(ResourcePurityEntity entity) {
         ResourcePurityDTO dto = new ResourcePurityDTO();
         dto.setIdResourcePurity(entity.getIdResourcePurity());
         dto.setIdResource(entity.getIdResource().getIdResource());
@@ -94,7 +103,7 @@ public class ResourcePurityService {
         return dto;
     }
 
-    private ResourcePurityEntity DTOToResourcePurity(ResourcePurityDTO dto) {
+    public ResourcePurityEntity DTOToResourcePurity(ResourcePurityDTO dto) {
         ResourcePurityEntity entity = new ResourcePurityEntity();
         entity.setIdResourcePurity(dto.getIdResourcePurity());
         entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));

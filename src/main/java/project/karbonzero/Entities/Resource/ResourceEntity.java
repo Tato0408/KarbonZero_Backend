@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,5 +33,5 @@ public class ResourceEntity {
     private Double carbonFootprint;
 
     @OneToMany(mappedBy = "idResource")
-    private Set<ResourcePurityEntity> resourcePurities;
+    private List<ResourcePurityEntity> resourcePuritiesList;
 }

@@ -83,7 +83,7 @@ public class RolService {
         }
     }
 
-    private RolDTO RolToDTO (RolEntity entity) {
+    public RolDTO RolToDTO (RolEntity entity) {
         RolDTO dto = new RolDTO();
         dto.setIdRol(entity.getIdRol());
         dto.setName(entity.getName());

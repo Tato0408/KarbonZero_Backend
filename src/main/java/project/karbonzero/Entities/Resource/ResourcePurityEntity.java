@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+
+import java.util.List;
 
 @Entity
 @Table(name = "TBRESOURCEPURITIES")
@@ -24,4 +27,7 @@ public class ResourcePurityEntity {
 
     @Column(name = "PURITY", nullable = false)
     private Double purity;
+
+    @OneToMany(mappedBy = "idResourcePurity")
+    private List<ConsumptionEntity> consumptionsList;
 }

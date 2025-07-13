@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,5 +25,5 @@ public class MeasureEntity {
     private String name;
 
     @OneToMany(mappedBy = "idMeasure")
-    private Set<MeasureUnitEntity> measureUnitsSet;
+    private List<MeasureUnitEntity> measureUnitsList;
 }

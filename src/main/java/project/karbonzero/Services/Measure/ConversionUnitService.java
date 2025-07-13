@@ -86,7 +86,7 @@ public class ConversionUnitService {
         }
     }
 
-    private ConversionUnitDTO ConversionUnitToDTO(ConversionUnitEntity entity) {
+    public ConversionUnitDTO ConversionUnitToDTO(ConversionUnitEntity entity) {
         ConversionUnitDTO dto = new ConversionUnitDTO();
         dto.setIdConversionUnit(entity.getIdConversionUnit());
         dto.setIdInitialUnit(entity.getIdInitialUnit().getIdMeasureUnit());
@@ -97,7 +97,7 @@ public class ConversionUnitService {
         return dto;
     }
 
-    private ConversionUnitEntity DTOToConversionUnit(ConversionUnitDTO dto) {
+    public ConversionUnitEntity DTOToConversionUnit(ConversionUnitDTO dto) {
         ConversionUnitEntity entity = new ConversionUnitEntity();
         entity.setIdConversionUnit(dto.getIdConversionUnit());
         entity.setIdInitialUnit(measureUnitRepo.getReferenceById(dto.getIdInitialUnit()));

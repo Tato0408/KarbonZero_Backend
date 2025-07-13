@@ -44,7 +44,7 @@ public class UserService {
         UserEntity entity = repo.getReferenceById(id);
 
         return entity.getConsumptionsList().stream()
-                .map(ConsumptionService::ConsumptionToDTO)
+                .map(new ConsumptionService()::ConsumptionToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -109,7 +109,7 @@ public class UserService {
         }
     }
 
-    private UserDTO UserToDTO(UserEntity entity) {
+    public UserDTO UserToDTO(UserEntity entity) {
         UserDTO dto = new UserDTO();
         dto.setIdUser(entity.getIdUser());
         dto.setIdRol(entity.getIdRol().getIdRol());
@@ -121,7 +121,7 @@ public class UserService {
         return dto;
     }
 
-    private UserEntity DTOToUser(UserDTO dto) {
+    public UserEntity DTOToUser(UserDTO dto) {
         UserEntity entity = new UserEntity();
         entity.setIdUser(dto.getIdUser());
         entity.setIdRol(rolRepo.getReferenceById(dto.getIdRol()));

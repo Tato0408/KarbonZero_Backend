@@ -82,7 +82,7 @@ public class MeasureUnitService {
         }
     }
 
-    private MeasureUnitDTO MeasureUnitToDTO(MeasureUnitEntity entity) {
+    public MeasureUnitDTO MeasureUnitToDTO(MeasureUnitEntity entity) {
         MeasureUnitDTO dto = new MeasureUnitDTO();
         dto.setIdMeasureUnit(entity.getIdMeasureUnit());
         dto.setIdMeasure(entity.getIdMeasure().getIdMeasure());
@@ -90,7 +90,7 @@ public class MeasureUnitService {
         return dto;
     }
 
-    private MeasureUnitEntity DTOToMeasureUnit(MeasureUnitDTO dto) {
+    public MeasureUnitEntity DTOToMeasureUnit(MeasureUnitDTO dto) {
         MeasureUnitEntity entity = new MeasureUnitEntity();
         entity.setIdMeasureUnit(dto.getIdMeasureUnit());
         entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));

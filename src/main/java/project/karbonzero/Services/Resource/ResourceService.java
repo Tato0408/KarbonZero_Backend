@@ -4,10 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Entities.Resource.ResourceEntity;
+import project.karbonzero.Entities.Resource.ResourcePurityEntity;
+import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
+import project.karbonzero.Services.Consumption.ConsumptionService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +37,20 @@ public class ResourceService {
             return ResourceToDTO(entity);
         }
         return null;
+    }
+
+    public List<ConsumptionDTO> getResourceConsumptions (String id) {
+        ResourceEntity entity = repo.getReferenceById(id);
+
+        List<ResourcePurityEntity> resourcePurityEntities = entity.getResourcePuritiesList();
+        return resourcePurityEntities.stream()
+                .map(x -> {
+                    return x.getConsumptionsList().stream()
+                            .map(new ConsumptionService()::ConsumptionToDTO)
+                            .collect(Collectors.toList());
+                })
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
     public ResourceDTO insertResource (ResourceDTO dto) {
@@ -82,7 +100,7 @@ public class ResourceService {
         }
     }
 
-    private ResourceDTO ResourceToDTO(ResourceEntity entity) {
+    public ResourceDTO ResourceToDTO(ResourceEntity entity) {
         ResourceDTO dto = new ResourceDTO();
         dto.setIdResource(entity.getIdResource());
         dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
@@ -92,7 +110,7 @@ public class ResourceService {
         return dto;
     }
 
-    private ResourceEntity DTOToResource(ResourceDTO dto) {
+    public ResourceEntity DTOToResource(ResourceDTO dto) {
         ResourceEntity entity = new ResourceEntity();
         entity.setIdResource(dto.getIdResource());
         entity.setIdMeasureUnit(measureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));

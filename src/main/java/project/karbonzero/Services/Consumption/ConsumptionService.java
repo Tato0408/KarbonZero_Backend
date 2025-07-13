@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 @Service
 public class ConsumptionService {
     @Autowired
-    private static ConsumptionRepository repo;
+    private ConsumptionRepository repo;
     @Autowired
-    private static UserRepository userRepo;
+    private UserRepository userRepo;
     @Autowired
-    private static ResourcePurityRepository resourcePurityRepo;
+    private ResourcePurityRepository resourcePurityRepo;
 
     public List<ConsumptionDTO> getAllConsumptions(){
         List<ConsumptionEntity> consumptions = repo.findAll();
         return consumptions.stream()
-                .map(ConsumptionService::ConsumptionToDTO)
+                .map(this::ConsumptionToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -88,7 +88,7 @@ public class ConsumptionService {
         }
     }
 
-    public static ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
+    public ConsumptionDTO ConsumptionToDTO(ConsumptionEntity entity) {
         ConsumptionDTO dto = new ConsumptionDTO();
         dto.setIdConsumption(entity.getIdConsumption());
         dto.setIdResourcePurity(entity.getIdResourcePurity().getIdResourcePurity());
@@ -99,7 +99,7 @@ public class ConsumptionService {
         return dto;
     }
 
-    public static ConsumptionEntity DTOToConsumption(ConsumptionDTO dto) {
+    public ConsumptionEntity DTOToConsumption(ConsumptionDTO dto) {
         ConsumptionEntity entity = new ConsumptionEntity();
         entity.setIdConsumption(dto.getIdConsumption());
         entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
