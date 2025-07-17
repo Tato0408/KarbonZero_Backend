@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Models.DTO.UserDTO;
@@ -15,13 +14,13 @@ import project.karbonzero.Services.User.UserService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static project.karbonzero.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiUser")
 public class UserController {
+    // TODO: getAllFilter para todos
 
     @Autowired
     private UserService userService;
@@ -43,9 +42,9 @@ public class UserController {
         return userService.getUserConsumptions(id);
     }
 
-    @GetMapping("/getAllRols")
-    public List<RolDTO> getALlRols() {
-        return rolService.getAllRols();
+    @GetMapping("/getAllRoles")
+    public List<RolDTO> getALlRoles() {
+        return rolService.getAllRoles();
     }
 
     @GetMapping("/getRolById/{id}")

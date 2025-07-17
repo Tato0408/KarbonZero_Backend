@@ -9,11 +9,14 @@ import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ResourceDTO;
+import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
 import project.karbonzero.Services.Consumption.ConsumptionService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,6 +26,8 @@ public class ResourceService {
     private ResourceRepository repo;
     @Autowired
     private MeasureUnitRepository measureUnitRepo;
+    @Autowired
+    private ConsumptionRepository consumptionRepo;
 
     public List<ResourceDTO> getAllResources () {
         List<ResourceEntity> resources = repo.findAll();
@@ -39,7 +44,7 @@ public class ResourceService {
         return null;
     }
 
-    public List<ConsumptionDTO> getResourceConsumptions (String id) {
+    public List<ConsumptionDTO> getAllResourceConsumptions (String id) {
         ResourceEntity entity = repo.getReferenceById(id);
 
         List<ResourcePurityEntity> resourcePurityEntities = entity.getResourcePuritiesList();
@@ -51,6 +56,23 @@ public class ResourceService {
                 })
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, Object> getAllResourceConsumptionsCO2 (String id) {
+        ResourceEntity entity = repo.getReferenceById(id);
+        List<ResourcePurityEntity> resourcePurityEntities = entity.getResourcePuritiesList();
+
+        HashMap<String, Object> mergedAnswer = new HashMap<>();
+        resourcePurityEntities.forEach(x -> {
+            List<ConsumptionEntity> consumptionEntities = x.getConsumptionsList();
+            consumptionEntities.forEach(y -> {
+                HashMap<String, Object> answer = new HashMap<>();
+                mergedAnswer.put(y.getConsumptionDate(),
+                        (y.getQuantity() * y.getIdResourcePurity().getPurity() * y.getIdResourcePurity().getIdResource().getCarbonFootprint()));
+            });
+        });
+
+        return mergedAnswer;
     }
 
     public ResourceDTO insertResource (ResourceDTO dto) {

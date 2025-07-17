@@ -9,7 +9,6 @@ import org.hibernate.annotations.GenericGenerator;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "TBRESOURCES")

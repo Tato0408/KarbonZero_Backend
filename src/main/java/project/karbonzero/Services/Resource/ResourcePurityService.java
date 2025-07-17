@@ -1,15 +1,11 @@
 package project.karbonzero.Services.Resource;
 
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
-import project.karbonzero.Models.DTO.MeasureDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;

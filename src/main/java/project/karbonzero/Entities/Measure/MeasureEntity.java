@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "TBMEASURES")

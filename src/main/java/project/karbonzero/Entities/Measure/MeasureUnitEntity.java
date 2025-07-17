@@ -8,7 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "TBMEASUREUNITS")
@@ -29,5 +29,5 @@ public class MeasureUnitEntity {
     private String name;
 
     @OneToMany(mappedBy = "idMeasureUnit")
-    private Set<ResourceEntity> resourcesSet;
+    private List<ResourceEntity> resourcesList;
 }

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Entities.User.UserEntity;
 

@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
-import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Services.Resource.ResourcePurityService;
@@ -36,9 +35,16 @@ public class ResourceController {
         return resourceService.getResourceById(id);
     }
 
-    @GetMapping("/getResourceConsumptions/{id}")
-    public List<ConsumptionDTO> getResourceConsumptions (@PathVariable String id) {
-        return resourceService.getResourceConsumptions(id);
+    @GetMapping("/getAllResourceConsumptions/{id}")
+    public List<ConsumptionDTO> getAllResourceConsumptions (@PathVariable String id) {
+        return resourceService.getAllResourceConsumptions(id);
+    }
+
+    // TODO: getAllConsumptionsPercentage
+
+    @GetMapping("/getAllResourceConsumptionsCO2/{id}")
+    public Map<String, Object> getAllResourceConsumptionsCO2 (@PathVariable String id) {
+        return resourceService.getAllResourceConsumptionsCO2(id);
     }
 
     @GetMapping("/getAllResourcePurities")
@@ -51,7 +57,7 @@ public class ResourceController {
         return resourcePurityService.getResourcePurityById(id);
     }
 
-    @GetMapping("/getResourcePurityConsumptions/{id}")
+    @GetMapping("/getAllResourcePurityConsumptions/{id}")
     public List<ConsumptionDTO> getResourcePurityConsumptions (@PathVariable String id) {
         return resourcePurityService.getResourcePurityConsumptions(id);
     }

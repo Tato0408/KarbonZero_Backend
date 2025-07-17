@@ -1,6 +1,5 @@
 package project.karbonzero.Models.DTO;
 
-
 import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

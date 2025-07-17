@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
@@ -37,6 +36,11 @@ public class ConsumptionService {
             return ConsumptionToDTO(entity);
         }
         return null;
+    }
+
+    public Double getConsumptionCO2 (String id) {
+        ConsumptionEntity entity = repo.getReferenceById(id);
+        return (entity.getQuantity() * entity.getIdResourcePurity().getPurity() * entity.getIdResourcePurity().getIdResource().getCarbonFootprint());
     }
 
     public ConsumptionDTO insertConsumption (ConsumptionDTO dto) {

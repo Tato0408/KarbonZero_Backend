@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
-import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.UserDTO;
@@ -14,7 +13,6 @@ import project.karbonzero.Repositories.User.UserRepository;
 import project.karbonzero.Services.Consumption.ConsumptionService;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j

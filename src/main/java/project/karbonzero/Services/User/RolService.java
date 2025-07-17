@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.User.RolEntity;
-import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Repositories.User.RolRepository;
 
@@ -20,9 +18,9 @@ public class RolService {
     @Autowired
     private RolRepository repo;
 
-    public List<RolDTO> getAllRols () {
-        List<RolEntity> rols = repo.findAll();
-        return rols.stream()
+    public List<RolDTO> getAllRoles () {
+        List<RolEntity> roles = repo.findAll();
+        return roles.stream()
                 .map(this::RolToDTO)
                 .collect(Collectors.toList());
     }
@@ -37,7 +35,7 @@ public class RolService {
 
     public RolDTO insertRol (RolDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Rol cant't be null or empty");
+            throw new IllegalArgumentException("Rol can't be null or empty");
         }
 
         try {
