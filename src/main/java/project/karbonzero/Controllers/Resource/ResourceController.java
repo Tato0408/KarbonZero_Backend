@@ -17,6 +17,7 @@ import java.util.Map;
 import static project.karbonzero.Utils.Responses.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/apiResource")
 public class ResourceController {
 

@@ -22,7 +22,7 @@ public class ResourceEntity {
     private String idResource;
 
     @ManyToOne
-    @JoinColumn(name = "IDMEASUREUNIT", nullable = false)
+    @JoinColumn(name = "IDMEASUREUNIT",referencedColumnName = "IDMEASUREUNIT", nullable = false)
     private MeasureUnitEntity idMeasureUnit;
 
     @Column(name = "NAME", nullable = false, length = 200)
