@@ -17,9 +17,11 @@ public class ConversionUnitDTO {
 
     @NotBlank
     private String idInitialUnit;
-
+    private String nameInitialUnit;
     @NotBlank
     private String idFinalUnit;
+    private String nameFinalUnit;
+
     private String idResource;
 
     @NotBlank
