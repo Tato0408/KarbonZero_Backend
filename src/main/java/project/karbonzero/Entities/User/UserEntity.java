@@ -21,7 +21,7 @@ public class UserEntity {
     private String idUser;
 
     @ManyToOne
-    @JoinColumn(name="IDROL", nullable=false)
+    @JoinColumn(name="IDROL", referencedColumnName = "IDROL", nullable=false)
     private RolEntity idRol;
 
     @Column(name = "USERNAME", nullable = false, length = 200)

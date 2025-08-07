@@ -16,6 +16,7 @@ public class UserDTO {
     private String idUser;
 
     private String idRol;
+    private String nameRol;
 
     @NotBlank()
     @Size(max = 200)
