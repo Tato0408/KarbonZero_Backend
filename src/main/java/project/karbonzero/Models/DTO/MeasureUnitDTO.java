@@ -16,6 +16,7 @@ public class MeasureUnitDTO {
 
     @NotBlank
     private String idMeasure;
+    private String measureName;
 
     @NotBlank
     @Size(max = 200)

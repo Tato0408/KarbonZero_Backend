@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
+import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.MeasureRepository;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
@@ -85,16 +87,25 @@ public class MeasureUnitService {
     public MeasureUnitDTO MeasureUnitToDTO(MeasureUnitEntity entity) {
         MeasureUnitDTO dto = new MeasureUnitDTO();
         dto.setIdMeasureUnit(entity.getIdMeasureUnit());
-        dto.setIdMeasure(entity.getIdMeasure().getIdMeasure());
         dto.setName(entity.getName());
+        if(entity.getIdMeasure() != null){
+            dto.setMeasureName(entity.getIdMeasure().getName());
+            dto.setIdMeasure(entity.getIdMeasure().getIdMeasure());
+        }else{
+            dto.setMeasureName("No hay una medida asociada");
+            dto.setIdMeasure(null);
+        }
         return dto;
     }
 
     public MeasureUnitEntity DTOToMeasureUnit(MeasureUnitDTO dto) {
         MeasureUnitEntity entity = new MeasureUnitEntity();
         entity.setIdMeasureUnit(dto.getIdMeasureUnit());
-        entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));
         entity.setName(dto.getName());
+        if (dto.getIdMeasure()!=null){
+            MeasureEntity measure = measureRepo.findById(dto.getIdMeasure()).orElseThrow(()->new IllegalArgumentException("Medida no encontrado con ese ID" + dto.getIdMeasure()));
+            entity.setIdMeasure(measure);
+        }
         return entity;
     }
 
