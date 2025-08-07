@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
+import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.UserDTO;
@@ -110,24 +111,33 @@ public class UserService {
     public UserDTO UserToDTO(UserEntity entity) {
         UserDTO dto = new UserDTO();
         dto.setIdUser(entity.getIdUser());
-        dto.setIdRol(entity.getIdRol().getIdRol());
         dto.setUsername(entity.getUsername());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setUserPassword(entity.getUserPassword());
+        if(entity.getIdRol() != null){
+            dto.setNameRol(entity.getIdRol().getName());
+            dto.setIdRol(entity.getIdRol().getIdRol());
+        }else{
+            dto.setNameRol("No hay cargo asignado");
+            dto.setIdRol(null);
+        }
         return dto;
     }
 
     public UserEntity DTOToUser(UserDTO dto) {
         UserEntity entity = new UserEntity();
         entity.setIdUser(dto.getIdUser());
-        entity.setIdRol(rolRepo.getReferenceById(dto.getIdRol()));
         entity.setUsername(dto.getUsername());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
         entity.setUserPassword(dto.getUserPassword());
+        if (dto.getIdRol() != null){
+            RolEntity rol = rolRepo.findById(dto.getIdRol()).orElseThrow(()-> new IllegalArgumentException("Cargo no encontrado con ese ID" + dto.getIdRol()));
+            entity.setIdRol(rol);
+        }
         return entity;
     }
 }

@@ -20,6 +20,7 @@ import static project.karbonzero.Utils.Responses.*;
 import static project.karbonzero.Utils.Responses.responseCreated;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/apiMeasure")
 public class MeasureController {
 

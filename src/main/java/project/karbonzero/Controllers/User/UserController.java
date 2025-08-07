@@ -18,6 +18,7 @@ import java.util.Map;
 import static project.karbonzero.Utils.Responses.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/apiUser")
 public class UserController {
     // TODO: getAllFilter para todos

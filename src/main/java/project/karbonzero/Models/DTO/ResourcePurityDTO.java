@@ -15,7 +15,8 @@ public class ResourcePurityDTO {
 
     @NotBlank
     private String idResource;
-
+    private String resourceName;
+    private String resourcePurityMeasureUnit;
     @DecimalMin("0.01")
     @Max(1)
     @NotNull

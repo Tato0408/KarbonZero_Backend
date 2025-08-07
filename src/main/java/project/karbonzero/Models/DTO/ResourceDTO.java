@@ -18,7 +18,7 @@ public class ResourceDTO {
 
     @NotBlank
     private String idMeasureUnit;
-
+    private String measureName;
     @NotBlank
     @Size(max = 200)
     private String name;
