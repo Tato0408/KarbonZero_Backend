@@ -22,7 +22,7 @@ public class ResourcePurityEntity {
     private String idResourcePurity;
 
     @ManyToOne
-    @JoinColumn(name = "IDRESOURCE", nullable = false)
+    @JoinColumn(name = "IDRESOURCE", referencedColumnName = "IDRESOURCE", nullable = false)
     private ResourceEntity idResource;
 
     @Column(name = "PURITY", nullable = false)

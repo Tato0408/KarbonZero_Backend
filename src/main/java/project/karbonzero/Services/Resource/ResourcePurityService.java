@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
@@ -94,16 +95,27 @@ public class ResourcePurityService {
     public ResourcePurityDTO ResourcePurityToDTO(ResourcePurityEntity entity) {
         ResourcePurityDTO dto = new ResourcePurityDTO();
         dto.setIdResourcePurity(entity.getIdResourcePurity());
-        dto.setIdResource(entity.getIdResource().getIdResource());
         dto.setPurity(entity.getPurity());
+        if(entity.getIdResource() != null){
+            dto.setResourceName(entity.getIdResource().getName());
+            dto.setResourcePurityMeasureUnit(entity.getIdResource().getIdMeasureUnit().getName());
+            dto.setIdResource(entity.getIdResource().getIdResource());
+        }else{
+            dto.setIdResource(null);
+            dto.setResourcePurityMeasureUnit(null);
+            dto.setResourceName("No hay un recursos asignado");
+        }
         return dto;
     }
 
     public ResourcePurityEntity DTOToResourcePurity(ResourcePurityDTO dto) {
         ResourcePurityEntity entity = new ResourcePurityEntity();
         entity.setIdResourcePurity(dto.getIdResourcePurity());
-        entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));
         entity.setPurity(dto.getPurity());
+        if(dto.getIdResource() != null){
+            ResourceEntity resource = resourceRepo.findById(dto.getIdResource()).orElseThrow(()->new IllegalArgumentException("Recursos no encontrado con el id " + dto.getIdResource()));
+            entity.setIdResource(resource);
+        }
         return entity;
     }
 }

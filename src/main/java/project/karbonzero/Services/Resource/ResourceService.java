@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
@@ -125,20 +126,24 @@ public class ResourceService {
     public ResourceDTO ResourceToDTO(ResourceEntity entity) {
         ResourceDTO dto = new ResourceDTO();
         dto.setIdResource(entity.getIdResource());
-        dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
         dto.setName(entity.getName());
         dto.setCarbonFootprint(entity.getCarbonFootprint());
-
+        if(entity.getIdMeasureUnit() !=null){
+            dto.setMeasureName(entity.getIdMeasureUnit().getName());
+            dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+        }
         return dto;
     }
 
     public ResourceEntity DTOToResource(ResourceDTO dto) {
         ResourceEntity entity = new ResourceEntity();
         entity.setIdResource(dto.getIdResource());
-        entity.setIdMeasureUnit(measureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
         entity.setName(dto.getName());
         entity.setCarbonFootprint(dto.getCarbonFootprint());
-
+        if(dto.getIdMeasureUnit() !=null){
+            MeasureUnitEntity measureUnit = measureUnitRepo.findById(dto.getIdMeasureUnit()).orElseThrow(()-> new IllegalArgumentException("No se pudo encontrar la unidad de medida con el id " + dto.getIdMeasureUnit()));
+            entity.setIdMeasureUnit(measureUnit);
+        }
         return entity;
     }
 }
