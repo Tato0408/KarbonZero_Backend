@@ -33,6 +33,14 @@ public class MeasureService {
         return null;
     }
 
+    public List<MeasureDTO> getMeasuresByName(String name) {
+        List<MeasureEntity> measures = repo.findByNameContains(name);
+        return measures.stream()
+                .map(this::MeasureToDTO)
+                .collect(Collectors.toList());
+
+    }
+
     public MeasureDTO insertMeasure (MeasureDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Measure can't be null or empty");
@@ -91,5 +99,6 @@ public class MeasureService {
         entity.setName(dto.getName());
         return entity;
     }
+
 
 }

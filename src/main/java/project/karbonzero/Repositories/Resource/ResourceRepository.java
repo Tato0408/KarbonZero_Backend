@@ -4,6 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 
+import java.util.List;
+
 @Repository
 public interface ResourceRepository extends JpaRepository<ResourceEntity, String> {
+
+    List<ResourceEntity> findByNameContains (String name);
 }

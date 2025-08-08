@@ -36,6 +36,11 @@ public class ResourceController {
         return resourceService.getResourceById(id);
     }
 
+    @GetMapping("/getResourcesByName/{name}")
+    public List<ResourceDTO> getResourcesByName (@PathVariable String name) {
+        return resourceService.getResourcesByName(name);
+    }
+
     @GetMapping("/getAllResourceConsumptions/{id}")
     public List<ConsumptionDTO> getAllResourceConsumptions (@PathVariable String id) {
         return resourceService.getAllResourceConsumptions(id);
@@ -56,6 +61,11 @@ public class ResourceController {
     @GetMapping("/getResourcePurityById/{id}")
     public ResourcePurityDTO getResourcePurityById (@PathVariable String id) {
         return resourcePurityService.getResourcePurityById(id);
+    }
+
+    @GetMapping("/getResourcePuritiesByName/{name}")
+    public List<ResourcePurityDTO> getResourcePuritiesByName (@PathVariable String name) {
+        return resourcePurityService.getResourcePuritiesByName(name);
     }
 
     @GetMapping("/getAllResourcePurityConsumptions/{id}")

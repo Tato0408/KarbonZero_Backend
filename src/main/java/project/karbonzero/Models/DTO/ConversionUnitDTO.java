@@ -23,6 +23,7 @@ public class ConversionUnitDTO {
     private String nameFinalUnit;
 
     private String idResource;
+    private String nameResource;
 
     @NotBlank
     @Size(max = 100)

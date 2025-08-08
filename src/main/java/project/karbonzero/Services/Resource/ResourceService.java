@@ -45,6 +45,13 @@ public class ResourceService {
         return null;
     }
 
+    public List<ResourceDTO> getResourcesByName(String name) {
+        List<ResourceEntity> resources = repo.findByNameContains(name);
+        return resources.stream()
+                .map(this::ResourceToDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<ConsumptionDTO> getAllResourceConsumptions (String id) {
         ResourceEntity entity = repo.getReferenceById(id);
 
@@ -146,4 +153,6 @@ public class ResourceService {
         }
         return entity;
     }
+
+
 }

@@ -25,6 +25,8 @@ public class ConversionUnitService {
     @Autowired
     private MeasureUnitRepository measureUnitRepo;
     @Autowired
+    private ResourceRepository resourceRepo;
+
 
     public List<ConversionUnitDTO> getAllConversionUnits () {
         List<ConversionUnitEntity> conversionUnits = repo.findAll();
@@ -41,12 +43,26 @@ public class ConversionUnitService {
         return null;
     }
 
+    public List<ConversionUnitDTO> getConversionUnitsByNames(String name) {
+        List<MeasureUnitEntity> measureUnits = measureUnitRepo.findByNameContains(name);
+
+        return measureUnits.stream()
+                .map(x -> {
+                    return repo.findByIdInitialUnitOrIdFinalUnit(x, x).stream()
+                            .map(this::ConversionUnitToDTO)
+                            .collect(Collectors.toList());
+                })
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
     public ConversionUnitDTO insertConversionUnit (ConversionUnitDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Conversion Unit can't be null or empty");
         }
 
         try {
+
             ConversionUnitEntity entity = DTOToConversionUnit(dto);
             ConversionUnitEntity savedEntity = repo.save(entity);
 
@@ -63,7 +79,13 @@ public class ConversionUnitService {
 
                 entity.setIdInitialUnit(measureUnitRepo.getReferenceById(dto.getIdInitialUnit()));
                 entity.setIdFinalUnit(measureUnitRepo.getReferenceById(dto.getIdFinalUnit()));
-                entity.setIdResource(dto.getIdResource());
+
+                if (dto.getIdResource().isBlank()) {
+                    entity.setIdResource(null);
+                } else {
+                    entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));
+                }
+
                 entity.setOperation(dto.getOperation());
                 entity.setConstant(dto.getConstant());
 
@@ -93,37 +115,39 @@ public class ConversionUnitService {
     public ConversionUnitDTO ConversionUnitToDTO(ConversionUnitEntity entity) {
         ConversionUnitDTO dto = new ConversionUnitDTO();
         dto.setIdConversionUnit(entity.getIdConversionUnit());
-        dto.setIdResource(entity.getIdResource());
+        if (entity.getIdResource() != null) {
+            dto.setIdResource(entity.getIdResource().getIdResource());
+            dto.setNameResource(entity.getIdResource().getName());
+        } else {
+            dto.setIdResource(null);
+            dto.setNameResource("Universal");
+        }
+
         dto.setOperation(entity.getOperation());
         dto.setConstant(entity.getConstant());
-        if(entity.getIdInitialUnit() != null && entity.getIdFinalUnit() != null){
-            dto.setNameInitialUnit(entity.getIdInitialUnit().getName());
-            dto.setNameFinalUnit(entity.getIdFinalUnit().getName());
-            dto.setIdInitialUnit(entity.getIdInitialUnit().getIdMeasureUnit());
-            dto.setIdFinalUnit(entity.getIdFinalUnit().getIdMeasureUnit());
-        }else{
-            dto.setNameFinalUnit("No hay unidad de medida asociada");
-            dto.setNameInitialUnit("No hay unidad de medida asociada");
-            dto.setIdFinalUnit(null);
-            dto.setIdInitialUnit(null);
-        }
+        dto.setNameInitialUnit(entity.getIdInitialUnit().getName());
+        dto.setNameFinalUnit(entity.getIdFinalUnit().getName());
+        dto.setIdInitialUnit(entity.getIdInitialUnit().getIdMeasureUnit());
+        dto.setIdFinalUnit(entity.getIdFinalUnit().getIdMeasureUnit());
         return dto;
     }
 
     public ConversionUnitEntity DTOToConversionUnit(ConversionUnitDTO dto) {
         ConversionUnitEntity entity = new ConversionUnitEntity();
         entity.setIdConversionUnit(dto.getIdConversionUnit());
-        entity.setIdResource(dto.getIdResource());
         entity.setOperation(dto.getOperation());
         entity.setConstant(dto.getConstant());
-        if(dto.getIdInitialUnit()!= null && dto.getIdFinalUnit() != null){
-            MeasureUnitEntity finalMeasureUnit = measureUnitRepo.findById(dto.getIdFinalUnit()).orElseThrow(()-> new IllegalArgumentException("Unidad de medida no entonctrada con ese ID " + dto.getIdFinalUnit()));
-            MeasureUnitEntity initialMeasureUnit = measureUnitRepo.findById(dto.getIdInitialUnit()).orElseThrow(()-> new IllegalArgumentException("Unidad de medida no entonctrada con ese ID " + dto.getIdInitialUnit()));
-
-            entity.setIdInitialUnit(initialMeasureUnit);
-            entity.setIdFinalUnit(finalMeasureUnit);
+        if (dto.getIdResource().isBlank()) {
+            entity.setIdResource(null);
+        } else {
+            entity.setIdResource(resourceRepo.getReferenceById(dto.getIdResource()));
         }
+        MeasureUnitEntity finalMeasureUnit = measureUnitRepo.findById(dto.getIdFinalUnit()).orElseThrow(()-> new IllegalArgumentException("Unidad de medida no encontrada con ese ID " + dto.getIdFinalUnit()));
+        MeasureUnitEntity initialMeasureUnit = measureUnitRepo.findById(dto.getIdInitialUnit()).orElseThrow(()-> new IllegalArgumentException("Unidad de medida no encontrada con ese ID " + dto.getIdInitialUnit()));
+
+        entity.setIdInitialUnit(initialMeasureUnit);
+        entity.setIdFinalUnit(finalMeasureUnit);
+
         return entity;
     }
-
 }

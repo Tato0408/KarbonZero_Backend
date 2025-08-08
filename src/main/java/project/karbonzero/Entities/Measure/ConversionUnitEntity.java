@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import project.karbonzero.Entities.Resource.ResourceEntity;
+
+import java.util.Optional;
 
 @Entity
 @Table(name = "TBCONVERSIONUNITS")
@@ -26,8 +29,9 @@ public class ConversionUnitEntity {
     @JoinColumn(name = "IDFINALUNIT", nullable = false)
     private MeasureUnitEntity idFinalUnit;
 
-    @Column(name = "IDRESOURCE", nullable = true)
-    private String idResource;
+    @ManyToOne
+    @JoinColumn(name = "IDRESOURCE", nullable = true)
+    private ResourceEntity idResource;
 
     @Column(name = "OPERATION", nullable = false)
     private String operation;

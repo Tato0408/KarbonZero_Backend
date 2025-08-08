@@ -39,6 +39,19 @@ public class ResourcePurityService {
         return null;
     }
 
+    public List<ResourcePurityDTO> getResourcePuritiesByName(String name) {
+        List<ResourceEntity> resources = resourceRepo.findByNameContains(name);
+
+        return resources.stream()
+                .map(x -> {
+                    return repo.findByIdResource(x).stream()
+                            .map(this::ResourcePurityToDTO)
+                            .collect(Collectors.toList());
+                })
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
     public List<ConsumptionDTO> getResourcePurityConsumptions (String id) {
         ResourcePurityEntity entity = repo.getReferenceById(id);
         return entity.getConsumptionsList().stream()
@@ -118,4 +131,6 @@ public class ResourcePurityService {
         }
         return entity;
     }
+
+
 }
