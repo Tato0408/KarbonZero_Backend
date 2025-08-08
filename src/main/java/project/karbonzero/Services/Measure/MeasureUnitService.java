@@ -38,6 +38,13 @@ public class MeasureUnitService {
         return null;
     }
 
+    public List<MeasureUnitDTO> getMeasureUnitsByName(String name) {
+        List<MeasureUnitEntity> measureUnits = repo.findByNameContains(name);
+        return measureUnits.stream()
+                .map(this::MeasureUnitToDTO)
+                .collect(Collectors.toList());
+    }
+
     public MeasureUnitDTO insertMeasureUnit (MeasureUnitDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Measure Unit can't be null or empty");

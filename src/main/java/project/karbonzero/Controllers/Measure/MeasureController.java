@@ -41,6 +41,11 @@ public class MeasureController {
         return measureService.getMeasureById(id);
     }
 
+    @GetMapping("getMeasuresByName/{name}")
+    public List<MeasureDTO> getMeasuresByName (@PathVariable String name) {
+        return measureService.getMeasuresByName(name);
+    }
+
     @GetMapping("/getAllMeasureUnits")
     public List<MeasureUnitDTO> getAllMeasureUnits () {
         return  measureUnitService.getAllMeasureUnits();
@@ -51,6 +56,11 @@ public class MeasureController {
         return measureUnitService.getMeasureUnitById(id);
     }
 
+    @GetMapping("/getMeasureUnitsByName/{name}")
+    public List<MeasureUnitDTO> getMeasureUnitsByName (@PathVariable String name) {
+        return measureUnitService.getMeasureUnitsByName(name);
+    }
+
     @GetMapping("/getAllConversionUnits")
     public List<ConversionUnitDTO> getAllConversionUnits () {
         return conversionUnitService.getAllConversionUnits();
@@ -59,6 +69,11 @@ public class MeasureController {
     @GetMapping("/getConversionUnitById/{id}")
     public ConversionUnitDTO getConversionUnitById (@PathVariable String id) {
         return conversionUnitService.getConversionUnitById(id);
+    }
+
+    @GetMapping("/getConversionUnitsByName/{name}")
+    public List<ConversionUnitDTO> getConversionUnitsByName (@PathVariable String name) {
+        return conversionUnitService.getConversionUnitsByNames(name);
     }
 
     @PostMapping("/insertMeasure")
