@@ -15,6 +15,7 @@ import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
 import project.karbonzero.Services.Consumption.ConsumptionService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class ResourceService {
                 .collect(Collectors.toList());
     }
 
-    public List<ConsumptionDTO> getAllResourceConsumptions (String id) {
+    public List<ConsumptionDTO> getResourceConsumptions(String id) {
         ResourceEntity entity = repo.getReferenceById(id);
 
         List<ResourcePurityEntity> resourcePurityEntities = entity.getResourcePuritiesList();
@@ -66,7 +67,7 @@ public class ResourceService {
                 .collect(Collectors.toList());
     }
 
-    public Map<String, Object> getAllResourceConsumptionsCO2 (String id) {
+    public HashMap<String, Object> getResourceConsumptionsCO2(String id) {
         ResourceEntity entity = repo.getReferenceById(id);
         List<ResourcePurityEntity> resourcePurityEntities = entity.getResourcePuritiesList();
 
@@ -155,4 +156,17 @@ public class ResourceService {
     }
 
 
+    public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
+        List<ResourceDTO> resources = getAllResources();
+
+        return resources.stream()
+                .map(resource -> {
+                    HashMap<String, Object> hashMap = new HashMap<String, Object>();
+                    hashMap.put("id", resource.getIdResource());
+                    hashMap.put("name", resource.getName());
+                    hashMap.put("data", getResourceConsumptionsCO2(resource.getIdResource()));
+                    return hashMap;
+                })
+                .collect(Collectors.toList());
+    }
 }

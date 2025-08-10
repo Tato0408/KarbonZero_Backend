@@ -11,8 +11,11 @@ import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Services.Resource.ResourcePurityService;
 import project.karbonzero.Services.Resource.ResourceService;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static project.karbonzero.Utils.Responses.*;
 
@@ -41,16 +44,21 @@ public class ResourceController {
         return resourceService.getResourcesByName(name);
     }
 
-    @GetMapping("/getAllResourceConsumptions/{id}")
-    public List<ConsumptionDTO> getAllResourceConsumptions (@PathVariable String id) {
-        return resourceService.getAllResourceConsumptions(id);
+    @GetMapping("/getResourceConsumptions/{id}")
+    public List<ConsumptionDTO> getResourceConsumptions(@PathVariable String id) {
+        return resourceService.getResourceConsumptions(id);
     }
 
     // TODO: getAllConsumptionsPercentage
 
-    @GetMapping("/getAllResourceConsumptionsCO2/{id}")
-    public Map<String, Object> getAllResourceConsumptionsCO2 (@PathVariable String id) {
-        return resourceService.getAllResourceConsumptionsCO2(id);
+    @GetMapping("/getAllResourcesConsumptionsCO2")
+    public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
+        return resourceService.getAllResourcesConsumptionsCO2();
+    }
+
+    @GetMapping("/getResourceConsumptionsCO2/{id}")
+    public HashMap<String, Object> getResourceConsumptionsCO2(@PathVariable String id) {
+        return resourceService.getResourceConsumptionsCO2(id);
     }
 
     @GetMapping("/getAllResourcePurities")
