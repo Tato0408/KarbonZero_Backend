@@ -15,10 +15,8 @@ import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
 import project.karbonzero.Services.Consumption.ConsumptionService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -75,11 +73,50 @@ public class ResourceService {
         resourcePurityEntities.forEach(x -> {
             List<ConsumptionEntity> consumptionEntities = x.getConsumptionsList();
             consumptionEntities.forEach(y -> {
-                HashMap<String, Object> answer = new HashMap<>();
                 mergedAnswer.put(y.getConsumptionDate(),
                         (y.getQuantity() * y.getIdResourcePurity().getPurity() * y.getIdResourcePurity().getIdResource().getCarbonFootprint()));
             });
         });
+
+        return mergedAnswer;
+    }
+
+    public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
+        List<ResourceDTO> resources = getAllResources();
+
+        return resources.stream()
+                .map(resource -> {
+                    HashMap<String, Object> hashMap = new HashMap<String, Object>();
+                    hashMap.put("id", resource.getIdResource());
+                    hashMap.put("name", resource.getName());
+                    hashMap.put("data", getResourceConsumptionsCO2(resource.getIdResource()));
+                    return hashMap;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public HashMap<String, Double> getAllResourceConsumptionsCO2Total() {
+
+        HashMap<String, Double> mergedAnswer = new HashMap<>();
+        getAllResources()
+            .forEach(resource -> {
+                repo.getReferenceById(resource.getIdResource())
+                    .getResourcePuritiesList()
+                        .forEach(purity -> {
+                            purity.getConsumptionsList()
+                                .forEach(consumption -> {
+                                    if (!mergedAnswer.containsKey(resource.getName())) {
+                                        mergedAnswer.put(resource.getName(), 0.0);
+                                    }
+                                    mergedAnswer.put(resource.getName(),
+                                        (consumption.getQuantity() *
+                                        purity.getPurity() *
+                                        resource.getCarbonFootprint()) +
+                                        mergedAnswer.get(resource.getName())
+                                    );
+                                });
+                        });
+            });
 
         return mergedAnswer;
     }
@@ -155,18 +192,4 @@ public class ResourceService {
         return entity;
     }
 
-
-    public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
-        List<ResourceDTO> resources = getAllResources();
-
-        return resources.stream()
-                .map(resource -> {
-                    HashMap<String, Object> hashMap = new HashMap<String, Object>();
-                    hashMap.put("id", resource.getIdResource());
-                    hashMap.put("name", resource.getName());
-                    hashMap.put("data", getResourceConsumptionsCO2(resource.getIdResource()));
-                    return hashMap;
-                })
-                .collect(Collectors.toList());
-    }
 }

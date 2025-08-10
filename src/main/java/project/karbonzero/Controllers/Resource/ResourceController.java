@@ -15,7 +15,6 @@ import project.karbonzero.Services.Resource.ResourceService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static project.karbonzero.Utils.Responses.*;
 
@@ -49,17 +48,22 @@ public class ResourceController {
         return resourceService.getResourceConsumptions(id);
     }
 
-    // TODO: getAllConsumptionsPercentage
+    @GetMapping("/getResourceConsumptionsCO2/{id}")
+    public HashMap<String, Object> getResourceConsumptionsCO2(@PathVariable String id) {
+        return resourceService.getResourceConsumptionsCO2(id);
+    }
 
     @GetMapping("/getAllResourcesConsumptionsCO2")
     public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
         return resourceService.getAllResourcesConsumptionsCO2();
     }
 
-    @GetMapping("/getResourceConsumptionsCO2/{id}")
-    public HashMap<String, Object> getResourceConsumptionsCO2(@PathVariable String id) {
-        return resourceService.getResourceConsumptionsCO2(id);
+    @GetMapping("/getAllResourceConsumptionsCO2Total")
+    public HashMap<String, Double> getAllResourceConsumptionsCO2Total() {
+        return resourceService.getAllResourceConsumptionsCO2Total();
     }
+
+
 
     @GetMapping("/getAllResourcePurities")
     public List<ResourcePurityDTO> getAllResourcePurities () {
