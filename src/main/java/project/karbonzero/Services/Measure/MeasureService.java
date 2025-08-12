@@ -3,6 +3,9 @@ package project.karbonzero.Services.Measure;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Models.DTO.MeasureDTO;
@@ -18,8 +21,9 @@ public class MeasureService {
     @Autowired
     private MeasureRepository repo;
 
-    public List<MeasureDTO> getAllMeasures () {
-        List<MeasureEntity> measures = repo.findAll();
+    public List<MeasureDTO> getAllMeasures (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> measures = repo.findAll(pageable);
         return measures.stream()
                 .map(this::MeasureToDTO)
                 .collect(Collectors.toList());
@@ -33,8 +37,9 @@ public class MeasureService {
         return null;
     }
 
-    public List<MeasureDTO> getMeasuresByName(String name) {
-        List<MeasureEntity> measures = repo.findByNameContains(name);
+    public List<MeasureDTO> getMeasuresByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> measures = repo.findByNameContains(name, pageable);
         return measures.stream()
                 .map(this::MeasureToDTO)
                 .collect(Collectors.toList());
