@@ -3,6 +3,9 @@ package project.karbonzero.Services.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
 import project.karbonzero.Entities.User.RolEntity;
@@ -24,8 +27,9 @@ public class UserService {
     @Autowired
     private RolRepository rolRepo;
 
-    public List<UserDTO> getAllUsers(){
-        List<UserEntity> usuarios = repo.findAll();
+    public List<UserDTO> getAllUsers(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserEntity> usuarios = repo.findAll(pageable);
         return usuarios.stream()
                 .map(this::UserToDTO)
                 .collect(Collectors.toList());

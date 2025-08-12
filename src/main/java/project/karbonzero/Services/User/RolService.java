@@ -3,6 +3,9 @@ package project.karbonzero.Services.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Models.DTO.RolDTO;
@@ -18,8 +21,9 @@ public class RolService {
     @Autowired
     private RolRepository repo;
 
-    public List<RolDTO> getAllRoles () {
-        List<RolEntity> roles = repo.findAll();
+    public List<RolDTO> getAllRoles (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RolEntity> roles = repo.findAll(pageable);
         return roles.stream()
                 .map(this::RolToDTO)
                 .collect(Collectors.toList());

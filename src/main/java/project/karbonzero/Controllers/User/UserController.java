@@ -3,6 +3,7 @@ package project.karbonzero.Controllers.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,12 @@ public class UserController {
     private RolService rolService;
 
     @GetMapping("/getAllUsers")
-    public List<UserDTO> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "2") int size) {
+        if (size <= 0 || size > 50) {
+           return null;
+        }
+        return userService.getAllUsers(page, size);
     }
 
     @GetMapping("/getUserById/{id}")
@@ -44,8 +49,12 @@ public class UserController {
     }
 
     @GetMapping("/getAllRoles")
-    public List<RolDTO> getALlRoles() {
-        return rolService.getAllRoles();
+    public List<RolDTO> getALlRoles(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return rolService.getAllRoles(page, size);
     }
 
     @GetMapping("/getRolById/{id}")
