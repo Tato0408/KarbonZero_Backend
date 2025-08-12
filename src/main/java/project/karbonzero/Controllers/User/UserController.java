@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/getAllUsers")
     public List<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "2") int size) {
+                                     @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size > 50) {
            return null;
         }

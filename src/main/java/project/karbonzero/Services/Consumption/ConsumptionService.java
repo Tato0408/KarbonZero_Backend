@@ -3,6 +3,9 @@ package project.karbonzero.Services.Consumption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
@@ -23,8 +26,9 @@ public class ConsumptionService {
     @Autowired
     private ResourcePurityRepository resourcePurityRepo;
 
-    public List<ConsumptionDTO> getAllConsumptions(){
-        List<ConsumptionEntity> consumptions = repo.findAll();
+    public List<ConsumptionDTO> getAllConsumptions(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ConsumptionEntity> consumptions = repo.findAll(pageable);
         return consumptions.stream()
                 .map(this::ConsumptionToDTO)
                 .collect(Collectors.toList());

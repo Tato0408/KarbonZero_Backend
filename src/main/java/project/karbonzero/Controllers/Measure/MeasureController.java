@@ -81,7 +81,7 @@ public class MeasureController {
 
     @GetMapping("/getAllConversionUnits")
     public List<ConversionUnitDTO> getAllConversionUnits (@RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "2") int size) {
+                                                          @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size >= 50) {
             return null;
         }
@@ -96,7 +96,7 @@ public class MeasureController {
     @GetMapping("/getConversionUnitsByName/{name}")
     public List<ConversionUnitDTO> getConversionUnitsByName (@PathVariable String name,
                                                              @RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "2") int size){
+                                                             @RequestParam(defaultValue = "10") int size){
         if (size <= 0 || size >= 50) {
             return null;
         }
