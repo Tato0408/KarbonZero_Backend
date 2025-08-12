@@ -14,6 +14,7 @@ import java.util.*;
 import static project.karbonzero.Utils.Responses.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/apiConsumption")
 public class ConsumptionController {
 
@@ -21,8 +22,12 @@ public class ConsumptionController {
     private ConsumptionService consumptionService;
 
     @GetMapping("/getAllConsumptions")
-    public List<ConsumptionDTO> getAllConsumptions () {
-        return consumptionService.getAllConsumptions();
+    public List<ConsumptionDTO> getAllConsumptions (@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size){
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return consumptionService.getAllConsumptions(page, size);
     }
 
     @GetMapping("/getConsumptionById/{id}")

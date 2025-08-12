@@ -3,6 +3,9 @@ package project.karbonzero.Services.Measure;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
@@ -23,8 +26,9 @@ public class MeasureUnitService {
     @Autowired
     private MeasureRepository measureRepo;
 
-    public List<MeasureUnitDTO> getAllMeasureUnits () {
-        List<MeasureUnitEntity> measureUnits = repo.findAll();
+    public List<MeasureUnitDTO> getAllMeasureUnits (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> measureUnits = repo.findAll(pageable);
         return measureUnits.stream()
                 .map(this::MeasureUnitToDTO)
                 .collect(Collectors.toList());
@@ -38,8 +42,9 @@ public class MeasureUnitService {
         return null;
     }
 
-    public List<MeasureUnitDTO> getMeasureUnitsByName(String name) {
-        List<MeasureUnitEntity> measureUnits = repo.findByNameContains(name);
+    public List<MeasureUnitDTO> getMeasureUnitsByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> measureUnits = repo.findByNameContains(name, pageable);
         return measureUnits.stream()
                 .map(this::MeasureUnitToDTO)
                 .collect(Collectors.toList());

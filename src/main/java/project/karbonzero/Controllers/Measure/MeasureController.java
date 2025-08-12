@@ -32,8 +32,12 @@ public class MeasureController {
     private ConversionUnitService conversionUnitService;
 
     @GetMapping("/getAllMeasures")
-    public List<MeasureDTO> getAllMeasures () {
-        return measureService.getAllMeasures();
+    public List<MeasureDTO> getAllMeasures (@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return measureService.getAllMeasures(page, size);
     }
 
     @GetMapping("/getMeasureById/{id}")
@@ -42,13 +46,22 @@ public class MeasureController {
     }
 
     @GetMapping("getMeasuresByName/{name}")
-    public List<MeasureDTO> getMeasuresByName (@PathVariable String name) {
-        return measureService.getMeasuresByName(name);
+    public List<MeasureDTO> getMeasuresByName (@PathVariable String name,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return measureService.getMeasuresByName(name, page, size);
     }
 
     @GetMapping("/getAllMeasureUnits")
-    public List<MeasureUnitDTO> getAllMeasureUnits () {
-        return  measureUnitService.getAllMeasureUnits();
+    public List<MeasureUnitDTO> getAllMeasureUnits (@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return  measureUnitService.getAllMeasureUnits(page, size);
     }
 
     @GetMapping("/getMeasureUnitById/{id}")
@@ -57,13 +70,22 @@ public class MeasureController {
     }
 
     @GetMapping("/getMeasureUnitsByName/{name}")
-    public List<MeasureUnitDTO> getMeasureUnitsByName (@PathVariable String name) {
-        return measureUnitService.getMeasureUnitsByName(name);
+    public List<MeasureUnitDTO> getMeasureUnitsByName (@PathVariable String name,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return measureUnitService.getMeasureUnitsByName(name, page, size);
     }
 
     @GetMapping("/getAllConversionUnits")
-    public List<ConversionUnitDTO> getAllConversionUnits () {
-        return conversionUnitService.getAllConversionUnits();
+    public List<ConversionUnitDTO> getAllConversionUnits (@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return conversionUnitService.getAllConversionUnits(page, size);
     }
 
     @GetMapping("/getConversionUnitById/{id}")
@@ -72,8 +94,13 @@ public class MeasureController {
     }
 
     @GetMapping("/getConversionUnitsByName/{name}")
-    public List<ConversionUnitDTO> getConversionUnitsByName (@PathVariable String name) {
-        return conversionUnitService.getConversionUnitsByNames(name);
+    public List<ConversionUnitDTO> getConversionUnitsByName (@PathVariable String name,
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size){
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return conversionUnitService.getConversionUnitsByNames(name, page, size);
     }
 
     @PostMapping("/insertMeasure")

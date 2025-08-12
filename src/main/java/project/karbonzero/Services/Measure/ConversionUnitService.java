@@ -3,6 +3,9 @@ package project.karbonzero.Services.Measure;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.ConversionUnitEntity;
 import project.karbonzero.Entities.Measure.MeasureEntity;
@@ -28,8 +31,9 @@ public class ConversionUnitService {
     private ResourceRepository resourceRepo;
 
 
-    public List<ConversionUnitDTO> getAllConversionUnits () {
-        List<ConversionUnitEntity> conversionUnits = repo.findAll();
+    public List<ConversionUnitDTO> getAllConversionUnits (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ConversionUnitEntity> conversionUnits = repo.findAll(pageable);
         return conversionUnits.stream()
                 .map(this::ConversionUnitToDTO)
                 .collect(Collectors.toList());
@@ -43,8 +47,9 @@ public class ConversionUnitService {
         return null;
     }
 
-    public List<ConversionUnitDTO> getConversionUnitsByNames(String name) {
-        List<MeasureUnitEntity> measureUnits = measureUnitRepo.findByNameContains(name);
+    public List<ConversionUnitDTO> getConversionUnitsByNames(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> measureUnits = measureUnitRepo.findByNameContains(name,pageable);
 
         return measureUnits.stream()
                 .map(x -> {

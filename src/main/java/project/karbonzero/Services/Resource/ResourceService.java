@@ -3,6 +3,9 @@ package project.karbonzero.Services.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
@@ -29,8 +32,9 @@ public class ResourceService {
     @Autowired
     private ConsumptionRepository consumptionRepo;
 
-    public List<ResourceDTO> getAllResources () {
-        List<ResourceEntity> resources = repo.findAll();
+    public List<ResourceDTO> getAllResources (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ResourceEntity> resources = repo.findAll(pageable);
         return resources.stream()
                 .map(this::ResourceToDTO)
                 .collect(Collectors.toList());
@@ -44,8 +48,9 @@ public class ResourceService {
         return null;
     }
 
-    public List<ResourceDTO> getResourcesByName(String name) {
-        List<ResourceEntity> resources = repo.findByNameContains(name);
+    public List<ResourceDTO> getResourcesByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ResourceEntity> resources = repo.findByNameContains(name, pageable);
         return resources.stream()
                 .map(this::ResourceToDTO)
                 .collect(Collectors.toList());
@@ -82,7 +87,9 @@ public class ResourceService {
     }
 
     public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
-        List<ResourceDTO> resources = getAllResources();
+        List<ResourceDTO> resources = repo.findAll().stream()
+                .map(this::ResourceToDTO)
+                .collect(Collectors.toList());
 
         return resources.stream()
                 .map(resource -> {
@@ -98,24 +105,23 @@ public class ResourceService {
     public HashMap<String, Double> getAllResourceConsumptionsCO2Total() {
 
         HashMap<String, Double> mergedAnswer = new HashMap<>();
-        getAllResources()
+        repo.findAll()
             .forEach(resource -> {
-                repo.getReferenceById(resource.getIdResource())
-                    .getResourcePuritiesList()
-                        .forEach(purity -> {
-                            purity.getConsumptionsList()
-                                .forEach(consumption -> {
-                                    if (!mergedAnswer.containsKey(resource.getName())) {
-                                        mergedAnswer.put(resource.getName(), 0.0);
-                                    }
-                                    mergedAnswer.put(resource.getName(),
-                                        (consumption.getQuantity() *
-                                        purity.getPurity() *
-                                        resource.getCarbonFootprint()) +
-                                        mergedAnswer.get(resource.getName())
-                                    );
-                                });
-                        });
+                resource.getResourcePuritiesList()
+                   .forEach(purity -> {
+                       purity.getConsumptionsList()
+                           .forEach(consumption -> {
+                               if (!mergedAnswer.containsKey(resource.getName())) {
+                                   mergedAnswer.put(resource.getName(), 0.0);
+                               }
+                               mergedAnswer.put(resource.getName(),
+                                   (consumption.getQuantity() *
+                                   purity.getPurity() *
+                                   resource.getCarbonFootprint()) +
+                                   mergedAnswer.get(resource.getName())
+                               );
+                           });
+                       });
             });
 
         return mergedAnswer;

@@ -29,8 +29,12 @@ public class ResourceController {
     private ResourcePurityService resourcePurityService;
 
     @GetMapping("/getAllResources")
-    public List<ResourceDTO> getAllResources () {
-        return resourceService.getAllResources();
+    public List<ResourceDTO> getAllResources (@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return resourceService.getAllResources(page, size);
     }
 
     @GetMapping("/getResourceById/{id}")
@@ -39,8 +43,13 @@ public class ResourceController {
     }
 
     @GetMapping("/getResourcesByName/{name}")
-    public List<ResourceDTO> getResourcesByName (@PathVariable String name) {
-        return resourceService.getResourcesByName(name);
+    public List<ResourceDTO> getResourcesByName (@PathVariable String name,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return resourceService.getResourcesByName(name, page, size);
     }
 
     @GetMapping("/getResourceConsumptions/{id}")
@@ -63,11 +72,13 @@ public class ResourceController {
         return resourceService.getAllResourceConsumptionsCO2Total();
     }
 
-
-
     @GetMapping("/getAllResourcePurities")
-    public List<ResourcePurityDTO> getAllResourcePurities () {
-        return  resourcePurityService.getAllResourcePurities();
+    public List<ResourcePurityDTO> getAllResourcePurities ( @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return  resourcePurityService.getAllResourcePurities(page, size);
     }
 
     @GetMapping("/getResourcePurityById/{id}")
@@ -76,8 +87,13 @@ public class ResourceController {
     }
 
     @GetMapping("/getResourcePuritiesByName/{name}")
-    public List<ResourcePurityDTO> getResourcePuritiesByName (@PathVariable String name) {
-        return resourcePurityService.getResourcePuritiesByName(name);
+    public List<ResourcePurityDTO> getResourcePuritiesByName (@PathVariable String name,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return resourcePurityService.getResourcePuritiesByName(name, page, size);
     }
 
     @GetMapping("/getAllResourcePurityConsumptions/{id}")
