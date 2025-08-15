@@ -61,4 +61,11 @@ public class Responses {
                 "message", message
         ));
     }
+
+    public static ResponseEntity<Map<String, Object>> responseOK (Object value) {
+        return ResponseEntity.ok().body(Map.of(
+                "status", "process completed",
+                "value", value
+        ));
+    }
 }

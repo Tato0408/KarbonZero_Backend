@@ -19,8 +19,10 @@ public class ConsumptionDTO {
 
     @NotBlank
     private String idResourcePurity;
+    private String resourcePurityName;
     @NotBlank
     private String idUser;
+    private String userName;
 
     @Min(0)
     @NotNull
@@ -33,4 +35,5 @@ public class ConsumptionDTO {
     @Min(0)
     @NotNull
     private Double cost;
+
 }

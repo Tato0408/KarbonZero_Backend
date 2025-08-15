@@ -100,7 +100,9 @@ public class ConsumptionService {
         ConsumptionDTO dto = new ConsumptionDTO();
         dto.setIdConsumption(entity.getIdConsumption());
         dto.setIdResourcePurity(entity.getIdResourcePurity().getIdResourcePurity());
+        dto.setResourcePurityName(entity.getIdResourcePurity().getIdResource().getName() + ": " + entity.getIdResourcePurity().getPurity());
         dto.setIdUser(entity.getIdUser().getIdUser());
+        dto.setUserName(entity.getIdUser().getUsername());
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumptionDate());
         dto.setCost(entity.getCost());

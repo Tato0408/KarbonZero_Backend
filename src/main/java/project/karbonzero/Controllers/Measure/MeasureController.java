@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import project.karbonzero.Entities.Measure.ConversionUnitEntity;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Models.DTO.MeasureDTO;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
@@ -13,6 +14,7 @@ import project.karbonzero.Services.Measure.ConversionUnitService;
 import project.karbonzero.Services.Measure.MeasureService;
 import project.karbonzero.Services.Measure.MeasureUnitService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +105,18 @@ public class MeasureController {
         return conversionUnitService.getConversionUnitsByNames(name, page, size);
     }
 
+    @GetMapping("/convertMeasureUnit")
+    public HashMap<String, Double> convertMeasureUnit (@RequestParam String idMeasureUnit1,
+                                                       @RequestParam String idMeasureUnit2,
+                                                       @RequestParam String idResource,
+                                                       @RequestParam Double value) {
+        HashMap<String, Double> answer = new HashMap<String, Double>();
+        answer.put("value",
+                    conversionUnitService.convertMeasureUnit(idMeasureUnit1, idMeasureUnit2, idResource, value)
+        );
+        return  answer;
+    }
+
     @PostMapping("/insertMeasure")
     public ResponseEntity<Map<String, Object>> insertMeasure(@Valid @RequestBody MeasureDTO dto, HttpServletRequest request) {
         try {
@@ -134,7 +148,6 @@ public class MeasureController {
     }
 
     // TODO: insert reverse conversion Unit
-    // TODO: getConversionUnitPath
     @PostMapping("insertConversionUnit")
     public ResponseEntity<Map<String, Object>> insertConversionUnit (@Valid @RequestBody ConversionUnitDTO dto, HttpServletRequest request) {
         try {
