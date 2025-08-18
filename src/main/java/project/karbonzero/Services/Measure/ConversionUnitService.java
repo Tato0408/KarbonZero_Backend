@@ -11,12 +11,13 @@ import project.karbonzero.Entities.Measure.ConversionUnitEntity;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Entities.Resource.ResourceEntity;
+import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Repositories.Measure.ConversionUnitRepository;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
 import project.karbonzero.Repositories.Resource.ResourceRepository;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +60,80 @@ public class ConversionUnitService {
                 })
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+
+    public List<ConversionUnitDTO> getConversionUnitPath(String idMeasure1, String idMeasure2, String idResource) {
+        HashMap<ConversionUnitEntity, ConversionUnitEntity> parent = new HashMap<>();
+        ResourceEntity resource = resourceRepo.getReferenceById(idResource);
+
+        List<ConversionUnitEntity> queue = new ArrayList<>();
+        queue.addAll(
+                repo.findByIdInitialUnitAndIdResource(
+                        measureUnitRepo.getReferenceById(idMeasure1),
+                        resource));
+        queue.addAll(
+                repo.findByIdInitialUnitAndIdResource(
+                        measureUnitRepo.getReferenceById(idMeasure1),
+                        null));
+        Set<ConversionUnitEntity> exploredSet = new HashSet<>();
+
+        while (!queue.isEmpty()) {
+            ConversionUnitEntity conversionUnitEntity = queue.get(0);
+            queue.remove(0);
+            exploredSet.add(conversionUnitEntity);
+
+            if (conversionUnitEntity.getIdInitialUnit().getIdMeasureUnit().equals(idMeasure2)
+            || conversionUnitEntity.getIdFinalUnit().getIdMeasureUnit().equals(idMeasure2)) {
+                List<ConversionUnitDTO> answer = new ArrayList<>();
+                ConversionUnitEntity actualConversion = conversionUnitEntity;
+
+                answer.add(ConversionUnitToDTO(actualConversion));
+                while (parent.containsKey(actualConversion)) {
+                    answer.add(ConversionUnitToDTO(parent.get(actualConversion)));
+                    actualConversion = parent.get(actualConversion);
+                }
+                Collections.reverse(answer);
+                return answer;
+            }
+
+            List<ConversionUnitEntity> nextConversionUnits = new ArrayList<>();
+            nextConversionUnits.addAll(
+                    repo.findByIdInitialUnitAndIdResource(
+                        conversionUnitEntity.getIdFinalUnit(), resource));
+            nextConversionUnits.addAll(
+                    repo.findByIdInitialUnitAndIdResource(
+                            conversionUnitEntity.getIdFinalUnit(), null));
+
+            for (ConversionUnitEntity nextConversionUnitEntity :  nextConversionUnits) {
+                if (!exploredSet.contains(nextConversionUnitEntity)) {
+                    parent.put(nextConversionUnitEntity, conversionUnitEntity);
+                    queue.add(nextConversionUnitEntity);
+                }
+            };
+        }
+        return null;
+    }
+
+    public Double convertMeasureUnit (String idMeasure1, String idMeasure2, String idResource, Double value) {
+        List<ConversionUnitDTO> path = getConversionUnitPath(idMeasure1, idMeasure2, idResource);
+        if (path == null) {
+            return null;
+        }
+
+        for (ConversionUnitDTO conversionUnitDTO : path) {
+            if (conversionUnitDTO.getOperation().equals("PROD")) {
+                value *= conversionUnitDTO.getConstant();
+            } else if (conversionUnitDTO.getOperation().equals("DIV")) {
+                //TODO: Agregar validaciones para la división por cero
+                value /= conversionUnitDTO.getConstant();
+            } else if (conversionUnitDTO.getOperation().equals("SUM")) {
+                value += conversionUnitDTO.getConstant();
+            } else {
+                value -= conversionUnitDTO.getConstant();
+            }
+        };
+        return value;
     }
 
     public ConversionUnitDTO insertConversionUnit (ConversionUnitDTO dto) {
@@ -155,4 +230,6 @@ public class ConversionUnitService {
 
         return entity;
     }
+
+
 }

@@ -114,15 +114,11 @@ public class ResourcePurityService {
         ResourcePurityDTO dto = new ResourcePurityDTO();
         dto.setIdResourcePurity(entity.getIdResourcePurity());
         dto.setPurity(entity.getPurity());
-        if(entity.getIdResource() != null){
-            dto.setResourceName(entity.getIdResource().getName());
-            dto.setResourcePurityMeasureUnit(entity.getIdResource().getIdMeasureUnit().getName());
-            dto.setIdResource(entity.getIdResource().getIdResource());
-        }else{
-            dto.setIdResource(null);
-            dto.setResourcePurityMeasureUnit(null);
-            dto.setResourceName("No hay un recursos asignado");
-        }
+        dto.setResourceName(entity.getIdResource().getName());
+        dto.setIdMeasureUnit(entity.getIdResource().getIdMeasureUnit().getIdMeasureUnit());
+        dto.setMeasureUnitName(entity.getIdResource().getIdMeasureUnit().getName());
+        dto.setIdResource(entity.getIdResource().getIdResource());
+
         return dto;
     }
 
@@ -130,10 +126,8 @@ public class ResourcePurityService {
         ResourcePurityEntity entity = new ResourcePurityEntity();
         entity.setIdResourcePurity(dto.getIdResourcePurity());
         entity.setPurity(dto.getPurity());
-        if(dto.getIdResource() != null){
-            ResourceEntity resource = resourceRepo.findById(dto.getIdResource()).orElseThrow(()->new IllegalArgumentException("Recursos no encontrado con el id " + dto.getIdResource()));
-            entity.setIdResource(resource);
-        }
+        ResourceEntity resource = resourceRepo.getReferenceById(dto.getIdResource());
+        entity.setIdResource(resource);
         return entity;
     }
 
