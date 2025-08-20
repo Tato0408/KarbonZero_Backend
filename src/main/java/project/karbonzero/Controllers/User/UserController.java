@@ -30,7 +30,7 @@ public class UserController {
     private RolService rolService;
 
     @GetMapping("/getAllUsers")
-    public List<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
+    public Page<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size > 50) {
            return null;
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/getAllRoles")
-    public List<RolDTO> getALlRoles(@RequestParam(defaultValue = "0") int page,
+    public Page<RolDTO> getALlRoles(@RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size > 50) {
             return null;

@@ -26,12 +26,10 @@ public class ConsumptionService {
     @Autowired
     private ResourcePurityRepository resourcePurityRepo;
 
-    public List<ConsumptionDTO> getAllConsumptions(int page, int size){
+    public Page<ConsumptionDTO> getAllConsumptions(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<ConsumptionEntity> consumptions = repo.findAll(pageable);
-        return consumptions.stream()
-                .map(this::ConsumptionToDTO)
-                .collect(Collectors.toList());
+        return consumptions.map(this::ConsumptionToDTO);
     }
 
     public ConsumptionDTO getConsumptionById (String id) {

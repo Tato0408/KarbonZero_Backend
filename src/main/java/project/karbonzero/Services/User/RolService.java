@@ -21,12 +21,10 @@ public class RolService {
     @Autowired
     private RolRepository repo;
 
-    public List<RolDTO> getAllRoles (int page, int size) {
+    public Page<RolDTO> getAllRoles (int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<RolEntity> roles = repo.findAll(pageable);
-        return roles.stream()
-                .map(this::RolToDTO)
-                .collect(Collectors.toList());
+        return roles.map(this::RolToDTO);
     }
 
     public RolDTO getRolById (String id) {

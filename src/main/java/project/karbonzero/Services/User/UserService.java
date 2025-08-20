@@ -27,12 +27,10 @@ public class UserService {
     @Autowired
     private RolRepository rolRepo;
 
-    public List<UserDTO> getAllUsers(int page, int size){
+    public Page<UserDTO> getAllUsers(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<UserEntity> usuarios = repo.findAll(pageable);
-        return usuarios.stream()
-                .map(this::UserToDTO)
-                .collect(Collectors.toList());
+        return usuarios.map(this::UserToDTO);
     }
 
     public UserDTO getUserById (String id) {

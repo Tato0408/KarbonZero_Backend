@@ -26,12 +26,17 @@ public class MeasureUnitService {
     @Autowired
     private MeasureRepository measureRepo;
 
-    public List<MeasureUnitDTO> getAllMeasureUnits (int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MeasureUnitEntity> measureUnits = repo.findAll(pageable);
+    public List<MeasureUnitDTO> getAllMeasureUnits () {
+        List<MeasureUnitEntity> measureUnits = repo.findAll();
         return measureUnits.stream()
                 .map(this::MeasureUnitToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Page<MeasureUnitDTO> getAllMeasureUnits (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> measureUnits = repo.findAll(pageable);
+        return measureUnits.map(this::MeasureUnitToDTO);
     }
 
     public MeasureUnitDTO getMeasureUnitById (String id) {
@@ -42,12 +47,10 @@ public class MeasureUnitService {
         return null;
     }
 
-    public List<MeasureUnitDTO> getMeasureUnitsByName(String name, int page, int size) {
+    public Page<MeasureUnitDTO> getMeasureUnitsByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MeasureUnitEntity> measureUnits = repo.findByNameContains(name, pageable);
-        return measureUnits.stream()
-                .map(this::MeasureUnitToDTO)
-                .collect(Collectors.toList());
+        return measureUnits.map(this::MeasureUnitToDTO);
     }
 
     public MeasureUnitDTO insertMeasureUnit (MeasureUnitDTO dto) {

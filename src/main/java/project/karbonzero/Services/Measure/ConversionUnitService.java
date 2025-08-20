@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,10 @@ public class ConversionUnitService {
     private ResourceRepository resourceRepo;
 
 
-    public List<ConversionUnitDTO> getAllConversionUnits (int page, int size) {
+    public Page<ConversionUnitDTO> getAllConversionUnits (int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ConversionUnitEntity> conversionUnits = repo.findAll(pageable);
-        return conversionUnits.stream()
-                .map(this::ConversionUnitToDTO)
-                .collect(Collectors.toList());
+        return conversionUnits.map(this::ConversionUnitToDTO);
     }
 
     public ConversionUnitDTO getConversionUnitById (String id) {
@@ -48,18 +47,18 @@ public class ConversionUnitService {
         return null;
     }
 
-    public List<ConversionUnitDTO> getConversionUnitsByNames(String name, int page, int size) {
+    public Page<ConversionUnitDTO> getConversionUnitsByNames(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MeasureUnitEntity> measureUnits = measureUnitRepo.findByNameContains(name,pageable);
 
-        return measureUnits.stream()
+        return new PageImpl<>(measureUnits.stream()
                 .map(x -> {
                     return repo.findByIdInitialUnitOrIdFinalUnit(x, x).stream()
                             .map(this::ConversionUnitToDTO)
                             .collect(Collectors.toList());
                 })
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
 

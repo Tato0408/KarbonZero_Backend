@@ -21,12 +21,17 @@ public class MeasureService {
     @Autowired
     private MeasureRepository repo;
 
-    public List<MeasureDTO> getAllMeasures (int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MeasureEntity> measures = repo.findAll(pageable);
+    public List<MeasureDTO> getAllMeasures () {
+        List<MeasureEntity> measures = repo.findAll();
         return measures.stream()
                 .map(this::MeasureToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Page<MeasureDTO> getAllMeasures (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> measures = repo.findAll(pageable);
+        return measures.map(this::MeasureToDTO);
     }
 
     public MeasureDTO getMeasureById (String id) {
@@ -37,12 +42,10 @@ public class MeasureService {
         return null;
     }
 
-    public List<MeasureDTO> getMeasuresByName(String name, int page, int size) {
+    public Page<MeasureDTO> getMeasuresByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MeasureEntity> measures = repo.findByNameContains(name, pageable);
-        return measures.stream()
-                .map(this::MeasureToDTO)
-                .collect(Collectors.toList());
+        return measures.map(this::MeasureToDTO);
 
     }
 

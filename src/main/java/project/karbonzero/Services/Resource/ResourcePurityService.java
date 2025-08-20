@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,10 @@ public class ResourcePurityService {
     @Autowired
     private ResourceRepository resourceRepo;
 
-    public List<ResourcePurityDTO> getAllResourcePurities(int page, int size) {
+    public Page<ResourcePurityDTO> getAllResourcePurities(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ResourcePurityEntity> resourcePurities = repo.findAll(pageable);
-        return resourcePurities.stream()
-                .map(this::ResourcePurityToDTO)
-                .collect(Collectors.toList());
+        return resourcePurities.map(this::ResourcePurityToDTO);
     }
 
     public ResourcePurityDTO getResourcePurityById (String id) {
@@ -43,18 +42,18 @@ public class ResourcePurityService {
         return null;
     }
 
-    public List<ResourcePurityDTO> getResourcePuritiesByName(String name, int page, int size) {
+    public Page<ResourcePurityDTO> getResourcePuritiesByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ResourceEntity> resources = resourceRepo.findByNameContains(name, pageable);
 
-        return resources.stream()
+        return new PageImpl<>(resources.stream()
                 .map(x -> {
                     return repo.findByIdResource(x).stream()
                             .map(this::ResourcePurityToDTO)
                             .collect(Collectors.toList());
                 })
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public List<ConsumptionDTO> getResourcePurityConsumptions (String id) {

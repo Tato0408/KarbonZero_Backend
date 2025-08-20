@@ -3,6 +3,7 @@ package project.karbonzero.Controllers.Measure;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,13 @@ public class MeasureController {
     @Autowired
     private ConversionUnitService conversionUnitService;
 
+    @GetMapping("/getAllMeasuresList")
+    public List<MeasureDTO> getAllMeasuresList () {
+        return measureService.getAllMeasures();
+    }
+
     @GetMapping("/getAllMeasures")
-    public List<MeasureDTO> getAllMeasures (@RequestParam(defaultValue = "0") int page,
+    public Page<MeasureDTO> getAllMeasures (@RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size >= 50) {
             return null;
@@ -48,7 +54,7 @@ public class MeasureController {
     }
 
     @GetMapping("getMeasuresByName/{name}")
-    public List<MeasureDTO> getMeasuresByName (@PathVariable String name,
+    public Page<MeasureDTO> getMeasuresByName (@PathVariable String name,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size >= 50) {
@@ -57,8 +63,13 @@ public class MeasureController {
         return measureService.getMeasuresByName(name, page, size);
     }
 
+    @GetMapping("/getAllMeasureUnitsList")
+    public List<MeasureUnitDTO> getAllMeasureUnitsList () {
+        return  measureUnitService.getAllMeasureUnits();
+    }
+
     @GetMapping("/getAllMeasureUnits")
-    public List<MeasureUnitDTO> getAllMeasureUnits (@RequestParam(defaultValue = "0") int page,
+    public Page<MeasureUnitDTO> getAllMeasureUnits (@RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size >= 50) {
             return null;
@@ -72,7 +83,7 @@ public class MeasureController {
     }
 
     @GetMapping("/getMeasureUnitsByName/{name}")
-    public List<MeasureUnitDTO> getMeasureUnitsByName (@PathVariable String name,
+    public Page<MeasureUnitDTO> getMeasureUnitsByName (@PathVariable String name,
                                                        @RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size >= 50) {
@@ -82,7 +93,7 @@ public class MeasureController {
     }
 
     @GetMapping("/getAllConversionUnits")
-    public List<ConversionUnitDTO> getAllConversionUnits (@RequestParam(defaultValue = "0") int page,
+    public Page<ConversionUnitDTO> getAllConversionUnits (@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size >= 50) {
             return null;
@@ -96,7 +107,7 @@ public class MeasureController {
     }
 
     @GetMapping("/getConversionUnitsByName/{name}")
-    public List<ConversionUnitDTO> getConversionUnitsByName (@PathVariable String name,
+    public Page<ConversionUnitDTO> getConversionUnitsByName (@PathVariable String name,
                                                              @RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "10") int size){
         if (size <= 0 || size >= 50) {
@@ -240,7 +251,6 @@ public class MeasureController {
             return responseOK("Measure deleted with success");
 
         } catch (Exception e) {
-            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
             return responseServerError(e, "Can't delete the Measure object");
         }
     }
@@ -255,7 +265,6 @@ public class MeasureController {
             return responseOK("Measure Unit deleted with success");
 
         } catch (Exception e) {
-            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
             return responseServerError(e, "Can't delete the Measure Unit object");
         }
     }
@@ -270,7 +279,6 @@ public class MeasureController {
             return responseOK("Conversion Unit deleted with success");
 
         } catch (Exception e) {
-            // Si ocurre cualquier error inesperado, retorna 500 (Internal Server Error)
             return responseServerError(e, "Can't delete the Conversion Unit object");
         }
     }

@@ -32,12 +32,17 @@ public class ResourceService {
     @Autowired
     private ConsumptionRepository consumptionRepo;
 
-    public List<ResourceDTO> getAllResources (int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ResourceEntity> resources = repo.findAll(pageable);
+    public List<ResourceDTO> getAllResources () {
+        List<ResourceEntity> resources = repo.findAll();
         return resources.stream()
                 .map(this::ResourceToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Page<ResourceDTO> getAllResources (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ResourceEntity> resources = repo.findAll(pageable);
+        return resources.map(this::ResourceToDTO);
     }
 
     public ResourceDTO getResourceById (String id) {
@@ -48,12 +53,10 @@ public class ResourceService {
         return null;
     }
 
-    public List<ResourceDTO> getResourcesByName(String name, int page, int size) {
+    public Page<ResourceDTO> getResourcesByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ResourceEntity> resources = repo.findByNameContains(name, pageable);
-        return resources.stream()
-                .map(this::ResourceToDTO)
-                .collect(Collectors.toList());
+        return resources.map(this::ResourceToDTO);
     }
 
     public List<ConsumptionDTO> getResourceConsumptions(String id) {
