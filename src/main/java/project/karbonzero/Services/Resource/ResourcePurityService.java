@@ -28,6 +28,13 @@ public class ResourcePurityService {
     @Autowired
     private ResourceRepository resourceRepo;
 
+    public List<ResourcePurityDTO> getAllResourcePurities() {
+        List<ResourcePurityEntity> resourcePurities = repo.findAll();
+        return resourcePurities.stream()
+                .map(this::ResourcePurityToDTO)
+                .collect(Collectors.toList());
+    }
+
     public Page<ResourcePurityDTO> getAllResourcePurities(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ResourcePurityEntity> resourcePurities = repo.findAll(pageable);

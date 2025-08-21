@@ -48,6 +48,11 @@ public class UserController {
         return userService.getUserConsumptions(id);
     }
 
+    @GetMapping("/getAllRolesList")
+    public List<RolDTO> getAllRolesList() {
+        return rolService.getAllRoles();
+    }
+
     @GetMapping("/getAllRoles")
     public Page<RolDTO> getALlRoles(@RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "10") int size) {

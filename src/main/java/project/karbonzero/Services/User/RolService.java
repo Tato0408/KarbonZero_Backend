@@ -21,6 +21,13 @@ public class RolService {
     @Autowired
     private RolRepository repo;
 
+    public List<RolDTO> getAllRoles () {
+        List<RolEntity> roles = repo.findAll();
+        return roles.stream()
+                .map(this::RolToDTO)
+                .collect(Collectors.toList());
+    }
+
     public Page<RolDTO> getAllRoles (int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<RolEntity> roles = repo.findAll(pageable);

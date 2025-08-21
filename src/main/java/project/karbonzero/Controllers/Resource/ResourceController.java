@@ -78,6 +78,11 @@ public class ResourceController {
         return resourceService.getAllResourceConsumptionsCO2Total();
     }
 
+    @GetMapping("/getAllResourcePuritiesList")
+    public List<ResourcePurityDTO> getAllResourcePuritiesList () {
+        return resourcePurityService.getAllResourcePurities();
+    }
+
     @GetMapping("/getAllResourcePurities")
     public Page<ResourcePurityDTO> getAllResourcePurities ( @RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "10") int size) {
