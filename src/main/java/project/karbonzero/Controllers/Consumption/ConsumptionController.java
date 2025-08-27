@@ -3,6 +3,7 @@ package project.karbonzero.Controllers.Consumption;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class ConsumptionController {
     private ConsumptionService consumptionService;
 
     @GetMapping("/getAllConsumptions")
-    public List<ConsumptionDTO> getAllConsumptions (@RequestParam(defaultValue = "0") int page,
+    public Page<ConsumptionDTO> getAllConsumptions (@RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size){
         if (size <= 0 || size >= 50) {
             return null;
@@ -33,6 +34,28 @@ public class ConsumptionController {
     @GetMapping("/getConsumptionById/{id}")
     public ConsumptionDTO getConsumptionById (@PathVariable String id) {
         return consumptionService.getConsumptionById(id);
+    }
+
+    @GetMapping("/getConsumptionsByName/{name}")
+    public Page<ConsumptionDTO> getConsumptionsByName (@PathVariable String name,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return consumptionService.getConsumptionsByName(name, page, size);
+    }
+
+    @GetMapping("/getConsumptionsByFilters")
+    public Page<ConsumptionDTO> getConsumptionsByFilters (@RequestParam(defaultValue = "") String name,
+                                                          @RequestParam(defaultValue = "0") int year,
+                                                          @RequestParam(defaultValue = "0") int month,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return consumptionService.getConsumptionsByFilters(name, year, month, page, size);
     }
 
     @GetMapping("getConsumptionCO2/{id}")

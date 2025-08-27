@@ -22,15 +22,21 @@ import static project.karbonzero.Utils.Responses.*;
 @CrossOrigin(origins = "*")
 @RequestMapping("/apiUser")
 public class UserController {
-    // TODO: getAllFilter para todos
 
     @Autowired
     private UserService userService;
     @Autowired
     private RolService rolService;
 
+    @PostMapping("/loginUser")
+    public boolean loginUser (@RequestParam String email,
+                               @RequestParam String password) {
+
+        return userService.loginUser(email, password);
+    }
+
     @GetMapping("/getAllUsers")
-    public List<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
+    public Page<UserDTO> getAllUsers(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size > 50) {
            return null;
@@ -43,13 +49,28 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/getUsersByUsername/{username}")
+    public Page<UserDTO> getUsersByUsername (@PathVariable String username,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return userService.getUsersByUsername(username, page, size);
+    }
+
     @GetMapping("/getUserConsumptions/{id}")
     public List<ConsumptionDTO> getUserConsumptions (@PathVariable String id) {
         return userService.getUserConsumptions(id);
     }
 
+    @GetMapping("/getAllRolesList")
+    public List<RolDTO> getAllRolesList() {
+        return rolService.getAllRoles();
+    }
+
     @GetMapping("/getAllRoles")
-    public List<RolDTO> getALlRoles(@RequestParam(defaultValue = "0") int page,
+    public Page<RolDTO> getALlRoles(@RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "10") int size) {
         if (size <= 0 || size > 50) {
             return null;

@@ -27,12 +27,22 @@ public class UserService {
     @Autowired
     private RolRepository rolRepo;
 
-    public List<UserDTO> getAllUsers(int page, int size){
+    public boolean loginUser(String email, String password) {
+        Argon2PasswordEncoder argonObj = new Argon2PasswordEncoder();
+
+        UserEntity user = repo.findByEmail(email);
+        if (user == null) {
+            return false;
+        }
+
+        String databaseHashedPassword = user.getUserPassword();
+        return argonObj.decodePassword(databaseHashedPassword, password);
+    }
+
+    public Page<UserDTO> getAllUsers(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
-        Page<UserEntity> usuarios = repo.findAll(pageable);
-        return usuarios.stream()
-                .map(this::UserToDTO)
-                .collect(Collectors.toList());
+        Page<UserEntity> users = repo.findAll(pageable);
+        return users.map(this::UserToDTO);
     }
 
     public UserDTO getUserById (String id) {
@@ -41,6 +51,12 @@ public class UserService {
             return  UserToDTO(entity);
         }
         return null;
+    }
+
+    public Page<UserDTO> getUsersByUsername(String username, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserEntity> users = repo.findByUsernameContains(username, pageable);
+        return users.map(this::UserToDTO);
     }
 
     public List<ConsumptionDTO> getUserConsumptions (String id) {
@@ -144,4 +160,5 @@ public class UserService {
         }
         return entity;
     }
+
 }
