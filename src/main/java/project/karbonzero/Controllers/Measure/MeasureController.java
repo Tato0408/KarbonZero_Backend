@@ -53,7 +53,7 @@ public class MeasureController {
         return measureService.getMeasureById(id);
     }
 
-    @GetMapping("getMeasuresByName/{name}")
+    @GetMapping("/getMeasuresByName/{name}")
     public Page<MeasureDTO> getMeasuresByName (@PathVariable String name,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "10") int size) {

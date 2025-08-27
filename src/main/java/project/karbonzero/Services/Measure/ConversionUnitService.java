@@ -49,16 +49,9 @@ public class ConversionUnitService {
 
     public Page<ConversionUnitDTO> getConversionUnitsByNames(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<MeasureUnitEntity> measureUnits = measureUnitRepo.findByNameContains(name,pageable);
+        List<MeasureUnitEntity> measureUnits = measureUnitRepo.findByNameContains(name);
 
-        return new PageImpl<>(measureUnits.stream()
-                .map(x -> {
-                    return repo.findByIdInitialUnitOrIdFinalUnit(x, x).stream()
-                            .map(this::ConversionUnitToDTO)
-                            .collect(Collectors.toList());
-                })
-                .flatMap(List::stream)
-                .collect(Collectors.toList()));
+        return repo.findByIdInitialUnitInOrIdFinalUnitIn(measureUnits, measureUnits, pageable).map(this::ConversionUnitToDTO);
     }
 
 

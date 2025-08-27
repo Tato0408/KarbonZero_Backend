@@ -46,7 +46,6 @@ public class MeasureService {
         Pageable pageable = PageRequest.of(page, size);
         Page<MeasureEntity> measures = repo.findByNameContains(name, pageable);
         return measures.map(this::MeasureToDTO);
-
     }
 
     public MeasureDTO insertMeasure (MeasureDTO dto) {

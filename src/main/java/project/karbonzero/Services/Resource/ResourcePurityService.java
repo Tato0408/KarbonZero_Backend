@@ -51,16 +51,9 @@ public class ResourcePurityService {
 
     public Page<ResourcePurityDTO> getResourcePuritiesByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ResourceEntity> resources = resourceRepo.findByNameContains(name, pageable);
+        List<ResourceEntity> resources = resourceRepo.findByNameContains(name);
 
-        return new PageImpl<>(resources.stream()
-                .map(x -> {
-                    return repo.findByIdResource(x).stream()
-                            .map(this::ResourcePurityToDTO)
-                            .collect(Collectors.toList());
-                })
-                .flatMap(List::stream)
-                .collect(Collectors.toList()));
+        return repo.findByIdResourceIn(resources, pageable).map(this::ResourcePurityToDTO);
     }
 
     public List<ConsumptionDTO> getResourcePurityConsumptions (String id) {

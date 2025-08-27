@@ -1,5 +1,7 @@
 package project.karbonzero.Repositories.Measure;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import project.karbonzero.Entities.Measure.ConversionUnitEntity;
@@ -12,6 +14,7 @@ import java.util.List;
 @Repository
 public interface ConversionUnitRepository extends JpaRepository<ConversionUnitEntity, String> {
     List<ConversionUnitEntity> findByIdInitialUnitAndIdResource (MeasureUnitEntity idInitialUnit, ResourceEntity idResource);
-    List<ConversionUnitEntity> findByIdInitialUnitOrIdFinalUnit (MeasureUnitEntity idInitialUnit, MeasureUnitEntity idFinalUnit);
+
+    Page<ConversionUnitEntity> findByIdInitialUnitInOrIdFinalUnitIn (List<MeasureUnitEntity> initialUnits, List<MeasureUnitEntity> finalUnits, Pageable pageable);
 
 }

@@ -2,17 +2,25 @@ package project.karbonzero.Services.Consumption;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
+import project.karbonzero.Entities.Resource.ResourceEntity;
+import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
+import project.karbonzero.Repositories.Resource.ResourceRepository;
 import project.karbonzero.Repositories.User.UserRepository;
 
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +33,8 @@ public class ConsumptionService {
     private UserRepository userRepo;
     @Autowired
     private ResourcePurityRepository resourcePurityRepo;
+    @Autowired
+    private ResourceRepository resourceRepo;
 
     public Page<ConsumptionDTO> getAllConsumptions(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -40,6 +50,50 @@ public class ConsumptionService {
         return null;
     }
 
+    public Page<ConsumptionDTO> getConsumptionsByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<ResourceEntity> resources = resourceRepo.findByNameContains(name);
+
+        List<ResourcePurityEntity> resourcePurities = resources.stream()
+                .map(ResourceEntity::getResourcePuritiesList)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        return repo.findByIdResourcePurityIn(resourcePurities, pageable).map(this::ConsumptionToDTO);
+    }
+
+    public Page<ConsumptionDTO> getConsumptionsByFilters(String name, int year, int month, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<ResourceEntity> resources;
+        if (!name.isEmpty()) {
+            resources = resourceRepo.findByNameContains(name);
+        } else {
+            resources = resourceRepo.findAll();
+        }
+
+        List<ResourcePurityEntity> resourcePurities = resources.stream()
+                .map(ResourceEntity::getResourcePuritiesList)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        if (year == 0) {
+            return repo.findByIdResourcePurityIn(resourcePurities, pageable).map(this::ConsumptionToDTO);
+        }
+
+        String initialDate;
+        String finalDate;
+        if (month != 0) {
+                initialDate = "01/" + month + "/" + year;
+                finalDate = "01/" + (month + 1) + "/" + year;
+        } else {
+                initialDate = "01/01/" + year;
+                finalDate = "01/01/" + (year + 1);
+        }
+
+        return repo.findByIdResourcePurityInAndConsumptionDateBetween(resourcePurities, initialDate, finalDate, pageable).map(this::ConsumptionToDTO);
+    }
+
     public Double getConsumptionCO2 (String id) {
         ConsumptionEntity entity = repo.getReferenceById(id);
         return (entity.getQuantity() * entity.getIdResourcePurity().getPurity() * entity.getIdResourcePurity().getIdResource().getCarbonFootprint());
@@ -49,6 +103,7 @@ public class ConsumptionService {
         if (dto == null) {
             throw new IllegalArgumentException("Consumption can't be null or empty");
         }
+        System.out.println(dto);
 
         try {
             ConsumptionEntity entity = DTOToConsumption(dto);
@@ -56,6 +111,7 @@ public class ConsumptionService {
 
             return ConsumptionToDTO(savedEntity);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException("Can`t create Consumption " + e.getMessage());
         }
     }
@@ -117,4 +173,6 @@ public class ConsumptionService {
         entity.setCost(dto.getCost());
         return entity;
     }
+
+
 }

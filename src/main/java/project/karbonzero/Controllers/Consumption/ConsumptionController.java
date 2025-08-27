@@ -36,6 +36,28 @@ public class ConsumptionController {
         return consumptionService.getConsumptionById(id);
     }
 
+    @GetMapping("/getConsumptionsByName/{name}")
+    public Page<ConsumptionDTO> getConsumptionsByName (@PathVariable String name,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return consumptionService.getConsumptionsByName(name, page, size);
+    }
+
+    @GetMapping("/getConsumptionsByFilters")
+    public Page<ConsumptionDTO> getConsumptionsByFilters (@RequestParam(defaultValue = "") String name,
+                                                          @RequestParam(defaultValue = "0") int year,
+                                                          @RequestParam(defaultValue = "0") int month,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return consumptionService.getConsumptionsByFilters(name, year, month, page, size);
+    }
+
     @GetMapping("getConsumptionCO2/{id}")
     public Map<String, Object> getConsumptionCO2(@PathVariable String id) {
         HashMap<String, Object> answer = new HashMap<String, Object>();
