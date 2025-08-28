@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Entities.User.RolEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.MeasureUnitDTO;
 import project.karbonzero.Repositories.Measure.MeasureRepository;
 import project.karbonzero.Repositories.Measure.MeasureUnitRepository;
@@ -55,7 +56,7 @@ public class MeasureUnitService {
 
     public MeasureUnitDTO insertMeasureUnit (MeasureUnitDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Measure Unit can't be null or empty");
+            throw new BadDataException("Measure Unit can't be null or empty");
         }
 
         try {
@@ -64,7 +65,7 @@ public class MeasureUnitService {
 
             return MeasureUnitToDTO(savedEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Can`t create measure Unit " + e.getMessage());
+            throw new CreateException("Can`t create measure Unit " + e.getMessage());
         }
     }
 
@@ -79,10 +80,10 @@ public class MeasureUnitService {
                 MeasureUnitEntity savedEntity = repo.save(entity);
                 return MeasureUnitToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Measure Unit with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Measure Unit with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Measure Unit " + e.getMessage());
+            throw new UpdateException("Can`t update Measure Unit " + e.getMessage());
         }
     }
 
@@ -94,8 +95,8 @@ public class MeasureUnitService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Measure Unit with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Measure Unit with the ID : " + id + " doesn't exists");
         }
     }
 

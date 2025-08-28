@@ -12,6 +12,7 @@ import project.karbonzero.Entities.Measure.ConversionUnitEntity;
 import project.karbonzero.Entities.Measure.MeasureEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Entities.Resource.ResourceEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ConversionUnitDTO;
 import project.karbonzero.Repositories.Measure.ConversionUnitRepository;
@@ -108,29 +109,35 @@ public class ConversionUnitService {
     }
 
     public Double convertMeasureUnit (String idMeasure1, String idMeasure2, String idResource, Double value) {
-        List<ConversionUnitDTO> path = getConversionUnitPath(idMeasure1, idMeasure2, idResource);
-        if (path == null) {
+        try {
+            List<ConversionUnitDTO> path = getConversionUnitPath(idMeasure1, idMeasure2, idResource);
+            if (path == null) {
+                throw new BadDataException("Conversion is not possible");
+            }
+
+            for (ConversionUnitDTO conversionUnitDTO : path) {
+                if (conversionUnitDTO.getOperation().equals("PROD")) {
+                    value *= conversionUnitDTO.getConstant();
+                } else if (conversionUnitDTO.getOperation().equals("DIV")) {
+                    if (conversionUnitDTO.getConstant() == 0) {
+                        throw new BadDataException("Division by 0 is not possible");
+                    }
+                    value /= conversionUnitDTO.getConstant();
+                } else if (conversionUnitDTO.getOperation().equals("SUM")) {
+                    value += conversionUnitDTO.getConstant();
+                } else {
+                    value -= conversionUnitDTO.getConstant();
+                }
+            }
+            return value;
+        } catch (Exception e) {
             return null;
         }
-
-        for (ConversionUnitDTO conversionUnitDTO : path) {
-            if (conversionUnitDTO.getOperation().equals("PROD")) {
-                value *= conversionUnitDTO.getConstant();
-            } else if (conversionUnitDTO.getOperation().equals("DIV")) {
-                //TODO: Agregar validaciones para la división por cero
-                value /= conversionUnitDTO.getConstant();
-            } else if (conversionUnitDTO.getOperation().equals("SUM")) {
-                value += conversionUnitDTO.getConstant();
-            } else {
-                value -= conversionUnitDTO.getConstant();
-            }
-        };
-        return value;
     }
 
     public ConversionUnitDTO insertConversionUnit (ConversionUnitDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Conversion Unit can't be null or empty");
+            throw new BadDataException("Conversion Unit can't be null or empty");
         }
 
         try {
@@ -140,7 +147,7 @@ public class ConversionUnitService {
 
             return ConversionUnitToDTO(savedEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Can`t create Conversion Unit " + e.getMessage());
+            throw new CreateException("Can`t create Conversion Unit " + e.getMessage());
         }
     }
 
@@ -164,10 +171,10 @@ public class ConversionUnitService {
                 ConversionUnitEntity savedEntity = repo.save(entity);
                 return ConversionUnitToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Conversion Unit with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Conversion Unit with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Conversion Unit " + e.getMessage());
+            throw new UpdateException("Can`t update Conversion Unit " + e.getMessage());
         }
     }
 
@@ -179,8 +186,8 @@ public class ConversionUnitService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Conversion Unit with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Conversion Unit with the ID : " + id + " doesn't exists");
         }
     }
 
