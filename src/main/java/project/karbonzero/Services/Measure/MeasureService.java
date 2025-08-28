@@ -8,6 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Measure.MeasureEntity;
+import project.karbonzero.Exceptions.BadIdException;
+import project.karbonzero.Exceptions.CreateException;
+import project.karbonzero.Exceptions.DeleteException;
+import project.karbonzero.Exceptions.UpdateException;
 import project.karbonzero.Models.DTO.MeasureDTO;
 import project.karbonzero.Repositories.Measure.MeasureRepository;
 
@@ -50,7 +54,7 @@ public class MeasureService {
 
     public MeasureDTO insertMeasure (MeasureDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Measure can't be null or empty");
+            throw new BadIdException("Measure can't be null or empty");
         }
 
         try {
@@ -59,7 +63,7 @@ public class MeasureService {
 
             return MeasureToDTO(savedEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Can`t create Measure " + e.getMessage());
+            throw new CreateException("Can`t create Measure " + e.getMessage());
         }
     }
 
@@ -73,10 +77,10 @@ public class MeasureService {
                 MeasureEntity savedEntity = repo.save(entity);
                 return MeasureToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Measure with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Measure with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Measure " + e.getMessage());
+            throw new UpdateException("Can`t update Measure " + e.getMessage());
         }
     }
 
@@ -88,8 +92,8 @@ public class MeasureService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Measure with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Measure with the ID : " + id + " doesn't exists");
         }
     }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
@@ -101,18 +102,15 @@ public class ConsumptionService {
 
     public ConsumptionDTO insertConsumption (ConsumptionDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Consumption can't be null or empty");
+            throw new BadDataException("Consumption can't be null or empty");
         }
-        System.out.println(dto);
-
         try {
             ConsumptionEntity entity = DTOToConsumption(dto);
             ConsumptionEntity savedEntity = repo.save(entity);
 
             return ConsumptionToDTO(savedEntity);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException("Can`t create Consumption " + e.getMessage());
+            throw new CreateException("Can`t create Consumption " + e.getMessage());
         }
     }
 
@@ -130,10 +128,10 @@ public class ConsumptionService {
                 ConsumptionEntity savedEntity = repo.save(entity);
                 return ConsumptionToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Consumption with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Consumption with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Consumption " + e.getMessage());
+            throw new UpdateException("Can`t update Consumption " + e.getMessage());
         }
     }
 
@@ -145,8 +143,8 @@ public class ConsumptionService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Consumption with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Consumption with the ID : " + id + " doesn't exists");
         }
     }
 

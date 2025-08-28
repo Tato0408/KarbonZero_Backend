@@ -11,6 +11,7 @@ import project.karbonzero.Entities.Consumption.ConsumptionEntity;
 import project.karbonzero.Entities.Measure.MeasureUnitEntity;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ResourceDTO;
 import project.karbonzero.Repositories.Consumption.ConsumptionRepository;
@@ -92,7 +93,7 @@ public class ResourceService {
     public List<HashMap<String, Object>> getAllResourcesConsumptionsCO2() {
         List<ResourceDTO> resources = repo.findAll().stream()
                 .map(this::ResourceToDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         return resources.stream()
                 .map(resource -> {
@@ -132,7 +133,7 @@ public class ResourceService {
 
     public ResourceDTO insertResource (ResourceDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Resource can't be null or empty");
+            throw new BadDataException("Resource can't be null or empty");
         }
 
         try {
@@ -141,7 +142,7 @@ public class ResourceService {
 
             return ResourceToDTO(savedEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Can`t create Resource " + e.getMessage());
+            throw new CreateException("Can`t create Resource " + e.getMessage());
         }
     }
 
@@ -157,10 +158,10 @@ public class ResourceService {
                 ResourceEntity savedEntity = repo.save(entity);
                 return ResourceToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Resource with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Resource with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Resource " + e.getMessage());
+            throw new UpdateException("Can`t update Resource " + e.getMessage());
         }
     }
 
@@ -172,8 +173,8 @@ public class ResourceService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Resource with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Resource with the ID : " + id + " doesn't exists");
         }
     }
 

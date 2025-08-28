@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.Resource.ResourceEntity;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.ResourcePurityDTO;
 import project.karbonzero.Repositories.Resource.ResourcePurityRepository;
@@ -65,7 +66,7 @@ public class ResourcePurityService {
 
     public ResourcePurityDTO insertResourcePurity(ResourcePurityDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Resource Purity can't be null or empty");
+            throw new BadDataException("Resource Purity can't be null or empty");
         }
 
         try {
@@ -74,7 +75,7 @@ public class ResourcePurityService {
 
             return ResourcePurityToDTO(savedEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Can`t create Resource Purity " + e.getMessage());
+            throw new CreateException("Can`t create Resource Purity " + e.getMessage());
         }
     }
 
@@ -89,10 +90,10 @@ public class ResourcePurityService {
                 ResourcePurityEntity savedEntity = repo.save(entity);
                 return ResourcePurityToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Resource Purity with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Resource Purity with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Resource Purity " + e.getMessage());
+            throw new UpdateException("Can`t update Resource Purity " + e.getMessage());
         }
     }
 
@@ -104,8 +105,8 @@ public class ResourcePurityService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Resource Purity with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Resource Purity with the ID : " + id + " doesn't exists");
         }
     }
 

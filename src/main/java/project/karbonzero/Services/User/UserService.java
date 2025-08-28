@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import project.karbonzero.Config.Argon2PasswordEncoder;
 import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Entities.User.UserEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.User.RolRepository;
@@ -69,7 +70,7 @@ public class UserService {
 
     public UserDTO insertUser(UserDTO dto) {
         if (dto == null || dto.getUserPassword() == null || dto.getUserPassword().isEmpty()) {
-            throw new IllegalArgumentException("User or password can`t be null or empty");
+            throw new BadDataException("User or password can`t be null or empty");
         }
 
         try {
@@ -83,7 +84,7 @@ public class UserService {
             return UserToDTO(savedEntity);
         }
         catch (Exception e) {
-            throw new RuntimeException("Can't create user " + e.getMessage());
+            throw new CreateException("Can't create user " + e.getMessage());
         }
 
     }
@@ -108,10 +109,10 @@ public class UserService {
                 UserEntity savedEntity = repo.save(entity);
                 return UserToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The User with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The User with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update User " + e.getMessage());
+            throw new UpdateException("Can`t update User " + e.getMessage());
         }
     }
 
@@ -123,8 +124,8 @@ public class UserService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The User with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The User with the ID : " + id + " doesn't exists");
         }
     }
 
@@ -155,7 +156,7 @@ public class UserService {
         entity.setEmail(dto.getEmail());
         entity.setUserPassword(dto.getUserPassword());
         if (dto.getIdRol() != null){
-            RolEntity rol = rolRepo.findById(dto.getIdRol()).orElseThrow(()-> new IllegalArgumentException("Cargo no encontrado con ese ID" + dto.getIdRol()));
+            RolEntity rol = rolRepo.getReferenceById(dto.getIdRol());
             entity.setIdRol(rol);
         }
         return entity;

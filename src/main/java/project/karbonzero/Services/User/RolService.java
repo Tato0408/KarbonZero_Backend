@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.karbonzero.Entities.User.RolEntity;
+import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.RolDTO;
 import project.karbonzero.Repositories.User.RolRepository;
 
@@ -44,7 +45,7 @@ public class RolService {
 
     public RolDTO insertRol (RolDTO dto) {
         if (dto == null) {
-            throw new IllegalArgumentException("Rol can't be null or empty");
+            throw new BadDataException("Rol can't be null or empty");
         }
 
         try {
@@ -54,7 +55,7 @@ public class RolService {
             return RolToDTO(savedEntity);
         }
         catch (Exception e) {
-            throw new RuntimeException("Can`t create role " + e.getMessage());
+            throw new CreateException("Can`t create role " + e.getMessage());
         }
 
     }
@@ -70,10 +71,10 @@ public class RolService {
                 RolEntity savedEntity = repo.save(entity);
                 return RolToDTO(savedEntity);
             }
-            throw new IllegalArgumentException("The Rol with the ID : " + id + " doesn't exists");
+            throw new BadIdException("The Rol with the ID : " + id + " doesn't exists");
 
         } catch (Exception e) {
-            throw new RuntimeException("Can`t update Rol " + e.getMessage());
+            throw new UpdateException("Can`t update Rol " + e.getMessage());
         }
     }
 
@@ -85,8 +86,8 @@ public class RolService {
             } else{
                 return false;
             }
-        } catch (EmptyResultDataAccessException e) {
-            throw new EmptyResultDataAccessException("The Rol with the ID : " + id + " doesn't exists", 1);
+        } catch (Exception e) {
+            throw new DeleteException("The Rol with the ID : " + id + " doesn't exists");
         }
     }
 
