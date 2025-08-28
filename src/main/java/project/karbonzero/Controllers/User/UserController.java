@@ -13,6 +13,7 @@ import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Services.User.RolService;
 import project.karbonzero.Services.User.UserService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +30,12 @@ public class UserController {
     private RolService rolService;
 
     @PostMapping("/loginUser")
-    public boolean loginUser (@RequestParam String email,
-                               @RequestParam String password) {
+    public HashMap<String, Boolean> loginUser (@RequestParam String email,
+                              @RequestParam String password) {
 
-        return userService.loginUser(email, password);
+        HashMap<String, Boolean> answer = new HashMap<>();
+        answer.put("authenticated", userService.loginUser(email, password));
+        return answer;
     }
 
     @GetMapping("/getAllUsers")
