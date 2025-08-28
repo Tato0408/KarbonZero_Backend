@@ -28,7 +28,19 @@ public class UserService {
     @Autowired
     private RolRepository rolRepo;
 
-    public boolean loginUser(String email, String password) {
+    public Boolean confirmPassword(String idUser, String password) {
+        Argon2PasswordEncoder argonObj = new Argon2PasswordEncoder();
+
+        if (!repo.existsById(idUser)) {
+            return false;
+        }
+
+        UserEntity user = repo.getReferenceById(idUser);
+        String databaseHashedPassword = user.getUserPassword();
+        return argonObj.decodePassword(databaseHashedPassword, password);
+    }
+
+    public Boolean loginUser(String email, String password) {
         Argon2PasswordEncoder argonObj = new Argon2PasswordEncoder();
 
         UserEntity user = repo.findByEmail(email);
@@ -49,9 +61,14 @@ public class UserService {
     public UserDTO getUserById (String id) {
         if (repo.existsById(id)){
             UserEntity entity = repo.getReferenceById(id);
-            return  UserToDTO(entity);
+            return UserToDTO(entity);
         }
         return null;
+    }
+
+    public UserDTO getUserByEmail(String email) {
+        UserEntity entity = repo.findByEmail(email);
+        return UserToDTO(entity);
     }
 
     public Page<UserDTO> getUsersByUsername(String username, int page, int size) {
@@ -121,7 +138,7 @@ public class UserService {
             if (repo.existsById(id)){
                 repo.deleteById(id);
                 return true;
-            } else{
+            } else {
                 return false;
             }
         } catch (Exception e) {
@@ -161,5 +178,4 @@ public class UserService {
         }
         return entity;
     }
-
 }

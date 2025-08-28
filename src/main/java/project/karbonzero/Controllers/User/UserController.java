@@ -2,6 +2,7 @@ package project.karbonzero.Controllers.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
@@ -29,6 +30,14 @@ public class UserController {
     @Autowired
     private RolService rolService;
 
+    @PostMapping("/confirmPassword")
+    public  HashMap<String, Boolean> confirmPassword (@RequestParam String idUser,
+                                                      @RequestParam String password) {
+        HashMap<String, Boolean> answer = new HashMap<>();
+        answer.put("authenticated", userService.confirmPassword(idUser, password));
+        return answer;
+    }
+
     @PostMapping("/loginUser")
     public HashMap<String, Boolean> loginUser (@RequestParam String email,
                               @RequestParam String password) {
@@ -44,12 +53,23 @@ public class UserController {
         if (size <= 0 || size > 50) {
            return null;
         }
-        return userService.getAllUsers(page, size);
+        Page<UserDTO> answer = userService.getAllUsers(page, size);
+        answer.forEach(user -> {user.setUserPassword(null);});
+        return answer;
     }
 
     @GetMapping("/getUserById/{id}")
     public UserDTO getUserById (@PathVariable String id) {
-        return userService.getUserById(id);
+        UserDTO answer = userService.getUserById(id);
+        answer.setUserPassword(null);
+        return answer;
+    }
+
+    @GetMapping("/getUserByEmail/{email}")
+    public UserDTO getUserByEmail (@PathVariable String email) {
+        UserDTO answer = userService.getUserByEmail(email);
+        answer.setUserPassword(null);
+        return answer;
     }
 
     @GetMapping("/getUsersByUsername/{username}")
@@ -59,7 +79,9 @@ public class UserController {
         if (size <= 0 || size > 50) {
             return null;
         }
-        return userService.getUsersByUsername(username, page, size);
+        Page<UserDTO> answer = userService.getUsersByUsername(username, page, size);
+        answer.forEach(user -> {user.setUserPassword(null);});
+        return answer;
     }
 
     @GetMapping("/getUserConsumptions/{id}")
