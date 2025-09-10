@@ -12,10 +12,12 @@ import project.karbonzero.Entities.User.RolEntity;
 import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Exceptions.*;
 import project.karbonzero.Models.DTO.ConsumptionDTO;
+import project.karbonzero.Models.DTO.Mail.MailDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Repositories.User.RolRepository;
 import project.karbonzero.Repositories.User.UserRepository;
 import project.karbonzero.Services.Consumption.ConsumptionService;
+import project.karbonzero.Services.Mail.MailService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,8 @@ public class UserService {
     private UserRepository repo;
     @Autowired
     private RolRepository rolRepo;
+    @Autowired
+    private MailService mailService;
 
     public Boolean confirmPassword(String idUser, String password) {
         Argon2PasswordEncoder argonObj = new Argon2PasswordEncoder();
@@ -93,10 +97,25 @@ public class UserService {
         try {
             Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
             String hashedPassword = argon2PasswordEncoder.HashPassword(dto.getUserPassword());
+            //Se crea una variable que almacene la contraseña sin encriptar para que el usuario nuevo vea cual es su contraseña
+            String rawPassword = dto.getUserPassword();
             dto.setUserPassword(hashedPassword);
 
             UserEntity entity = DTOToUser(dto);
             UserEntity savedEntity = repo.save(entity);
+
+            //Se crea un objteo de tipo MailDto que guardara los datos del email
+            MailDTO mail = new MailDTO();
+            //Se asigna al SET del atributo que almacena el emial de correo destinatario el correo nuevo ingresado guardado en la variable savedEntity
+            mail.setToEmail(savedEntity.getEmail());
+            //Se asigna a la variable SET del atributo de asunto de correo diciendo que el usuario fue creado exitosamente
+            mail.setSubject("Usuario creado exitosamente");
+            //Se asigna a la variable SET del atributo del cuerpo del texto diciendo que el usuario fue creado exitosamente
+
+            mail.setText("Hola " + savedEntity.getFirstName() +" " + savedEntity.getLastName() + ", tu usuario ha sido creado exitosamente. "+" Su usuario es: "+ savedEntity.getUsername() +   " y su contraseña es: " + rawPassword);
+
+            //Se envia el correo usando el metodo de MailService
+            mailService.sendEmail(mail);
 
             return UserToDTO(savedEntity);
         }
