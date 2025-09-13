@@ -35,6 +35,12 @@ public class RolService {
         return roles.map(this::RolToDTO);
     }
 
+    public Page<RolDTO> getRolesByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RolEntity> roles = repo.findByNameContains(name, pageable);
+        return roles.map(this::RolToDTO);
+    }
+
     public RolDTO getRolById (String id) {
         if (repo.existsById(id)) {
             RolEntity entity =  repo.getReferenceById(id);
