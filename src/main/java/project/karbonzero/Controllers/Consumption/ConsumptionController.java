@@ -57,7 +57,12 @@ public class ConsumptionController {
         }
         return consumptionService.getConsumptionsByFilters(name, year, month, page, size);
     }
-
+    @GetMapping("/getConsumptionsByFiltersM")
+    public List<ConsumptionDTO> getConsumptionsByFiltersMonth(@RequestParam(defaultValue = "") String name,
+                                                          @RequestParam(defaultValue = "0") String start,
+                                                          @RequestParam(defaultValue = "0") String end) {
+        return consumptionService.getConsumptionsByFiltersMonth(name, start, end);
+    }
     @GetMapping("getConsumptionCO2/{id}")
     public Map<String, Object> getConsumptionCO2(@PathVariable String id) {
         HashMap<String, Object> answer = new HashMap<String, Object>();
