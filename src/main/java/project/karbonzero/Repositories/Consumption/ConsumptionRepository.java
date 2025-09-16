@@ -13,7 +13,11 @@ import java.util.List;
 
 @Repository
 public interface ConsumptionRepository extends JpaRepository<ConsumptionEntity, String> {
+    Page<ConsumptionEntity> findAllByOrderByConsumptionDateDesc(Pageable page);
     Page<ConsumptionEntity> findByIdResourcePurityIn (List<ResourcePurityEntity> resourcePuritiesId, Pageable pageable);
-    Page<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetween (List<ResourcePurityEntity> resourcePuritiesId, String start, String end, Pageable pageable);
+    Page<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc (List<ResourcePurityEntity> resourcePuritiesId, String start, String end, Pageable pageable);
+    List<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc (List<ResourcePurityEntity> resourcePuritiesId, String start, String end);
+
+
 
 }

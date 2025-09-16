@@ -39,7 +39,7 @@ public class ConsumptionService {
 
     public Page<ConsumptionDTO> getAllConsumptions(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
-        Page<ConsumptionEntity> consumptions = repo.findAll(pageable);
+        Page<ConsumptionEntity> consumptions = repo.findAllByOrderByConsumptionDateDesc(pageable);
         return consumptions.map(this::ConsumptionToDTO);
     }
 
@@ -92,9 +92,24 @@ public class ConsumptionService {
                 finalDate = "01/01/" + (year + 1);
         }
 
-        return repo.findByIdResourcePurityInAndConsumptionDateBetween(resourcePurities, initialDate, finalDate, pageable).map(this::ConsumptionToDTO);
+        return repo.findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc(resourcePurities, initialDate, finalDate, pageable).map(this::ConsumptionToDTO);
     }
 
+    public List<ConsumptionDTO> getConsumptionsByFiltersMonth(String name, String start, String end) {
+        List<ResourceEntity> resources;
+        if (!name.isEmpty()) {
+            resources = resourceRepo.findByNameContains(name);
+        } else {
+            resources = resourceRepo.findAll();
+        }
+
+        List<ResourcePurityEntity> resourcePurities = resources.stream()
+                .map(ResourceEntity::getResourcePuritiesList)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        return repo.findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc(resourcePurities, start, end).stream().map(this::ConsumptionToDTO).collect(Collectors.toList());
+    }
     public Double getConsumptionCO2 (String id) {
         ConsumptionEntity entity = repo.getReferenceById(id);
         return (entity.getQuantity() * entity.getIdResourcePurity().getPurity() * entity.getIdResourcePurity().getIdResource().getCarbonFootprint());
@@ -153,6 +168,7 @@ public class ConsumptionService {
         dto.setIdConsumption(entity.getIdConsumption());
         dto.setIdResourcePurity(entity.getIdResourcePurity().getIdResourcePurity());
         dto.setResourcePurityName(entity.getIdResourcePurity().getIdResource().getName() + ": " + entity.getIdResourcePurity().getPurity());
+        dto.setResourceMeasureUnit(entity.getIdResourcePurity().getIdResource().getIdMeasureUnit().getName());
         dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setUserName(entity.getIdUser().getUsername());
         dto.setQuantity(entity.getQuantity());

@@ -18,6 +18,7 @@ public class ConsumptionDTO {
     @NotBlank
     private String idResourcePurity;
     private String resourcePurityName;
+    private String resourceMeasureUnit;
     @NotBlank
     private String idUser;
     private String userName;
