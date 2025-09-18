@@ -42,6 +42,10 @@ public class ResourceController {
         }
         return resourceService.getAllResources(page, size);
     }
+    @GetMapping("/getAllResourcesSP")
+    public List<ResourceDTO> getAllResourcesSP () {
+        return resourceService.getAllResourcesSP();
+    }
 
     @GetMapping("/getResourceById/{id}")
     public ResourceDTO getResourceById (@PathVariable String id) {

@@ -45,6 +45,11 @@ public class ResourceService {
         Page<ResourceEntity> resources = repo.findAll(pageable);
         return resources.map(this::ResourceToDTO);
     }
+    public List<ResourceDTO> getAllResourcesSP () {
+        List<ResourceEntity> resources = repo.findAll();
+        return resources.stream().map(this::ResourceToDTO).collect(Collectors.toList());
+    }
+
 
     public ResourceDTO getResourceById (String id) {
         if (repo.existsById(id)) {
