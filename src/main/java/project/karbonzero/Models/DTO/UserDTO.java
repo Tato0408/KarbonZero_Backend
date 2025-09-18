@@ -17,20 +17,15 @@ public class UserDTO {
 
     private String idRol;
     private String nameRol;
+    private Integer status;
 
-    @NotBlank()
-    @Size(max = 200)
+
     private String username;
-    @Size(max = 200)
     private String firstName;
-    @Size(max = 200)
     private String lastName;
 
-    @NotBlank()
-    @Email()
-    @Size(max = 200)
+
     private String email;
 
-    @Size(max = 200)
     private String userPassword;
 }
