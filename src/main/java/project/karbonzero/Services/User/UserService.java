@@ -135,6 +135,7 @@ public class UserService {
                 entity.setLastName(dto.getLastName());
                 entity.setEmail(dto.getEmail());
                 entity.setIdRol(rolRepo.getReferenceById(dto.getIdRol()));
+                entity.setImageProfile(dto.getImageProfile());
 
                 if (dto.getUserPassword() != null) {
                     Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder();
@@ -173,6 +174,7 @@ public class UserService {
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setUserPassword(entity.getUserPassword());
+        dto.setImageProfile(entity.getImageProfile());
         if(entity.getIdRol() != null){
             dto.setNameRol(entity.getIdRol().getName());
             dto.setIdRol(entity.getIdRol().getIdRol());
@@ -191,6 +193,7 @@ public class UserService {
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
         entity.setUserPassword(dto.getUserPassword());
+        entity.setImageProfile(dto.getImageProfile());
         if (dto.getIdRol() != null){
             RolEntity rol = rolRepo.getReferenceById(dto.getIdRol());
             entity.setIdRol(rol);
