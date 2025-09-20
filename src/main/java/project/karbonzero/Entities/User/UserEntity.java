@@ -41,4 +41,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "idUser")
     private List<ConsumptionEntity> consumptionsList;
+
+    @Column(name ="IMAGEPATH", nullable = true)
+    private String imageProfile;
 }

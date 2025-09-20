@@ -33,4 +33,6 @@ public class UserDTO {
 
     @Size(max = 200)
     private String userPassword;
+
+    private String imageProfile;
 }
