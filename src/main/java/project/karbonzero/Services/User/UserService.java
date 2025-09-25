@@ -166,6 +166,21 @@ public class UserService {
         }
     }
 
+    public boolean updateDisabled(String id, UserDTO dto) {
+        try {
+            if (repo.existsById(id)) {
+                UserEntity entity = repo.getReferenceById(id);
+                entity.setDisabled(dto.getDisabled());
+                repo.save(entity);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            throw new UpdateException("The User with the ID: " + id + " can't be blocked");
+        }
+    }
+
     public UserDTO UserToDTO(UserEntity entity) {
         UserDTO dto = new UserDTO();
         dto.setIdUser(entity.getIdUser());
@@ -174,6 +189,7 @@ public class UserService {
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setUserPassword(entity.getUserPassword());
+        dto.setDisabled(entity.getDisabled());
         dto.setImageProfile(entity.getImageProfile());
         if(entity.getIdRol() != null){
             dto.setNameRol(entity.getIdRol().getName());
@@ -193,6 +209,7 @@ public class UserService {
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
+        entity.setDisabled(dto.getDisabled());
         entity.setUserPassword(dto.getUserPassword());
         entity.setImageProfile(dto.getImageProfile());
         if (dto.getIdRol() != null){
@@ -201,4 +218,6 @@ public class UserService {
         }
         return entity;
     }
+
+
 }

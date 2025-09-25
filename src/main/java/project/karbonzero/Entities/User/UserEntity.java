@@ -39,6 +39,9 @@ public class UserEntity {
     @Column(name = "USERPASSWORD", nullable = false, length = 200)
     private String userPassword;
 
+    @Column(name = "DISABLED", nullable = true, length = 200)
+    private Integer disabled;
+
     @OneToMany(mappedBy = "idUser")
     private List<ConsumptionEntity> consumptionsList;
 
