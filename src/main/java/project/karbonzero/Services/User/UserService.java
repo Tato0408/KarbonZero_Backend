@@ -178,6 +178,7 @@ public class UserService {
         if(entity.getIdRol() != null){
             dto.setNameRol(entity.getIdRol().getName());
             dto.setIdRol(entity.getIdRol().getIdRol());
+            dto.setStatus(entity.getIdRol().getStatus());
         }else{
             dto.setNameRol("No hay cargo asignado");
             dto.setIdRol(null);

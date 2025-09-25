@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import project.karbonzero.Entities.User.UserEntity;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     UserEntity findByUsername (String username);
     UserEntity findByEmail (String email);
     Page<UserEntity> findByUsernameContains(String username, Pageable pageable);
+    Optional<UserEntity> findOptionalByEmail(String email);
+
 }
