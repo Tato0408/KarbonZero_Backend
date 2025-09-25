@@ -54,7 +54,12 @@ public class Responses {
                     "timestamp", Instant.now().toString()
         ));
     }
-
+    public static ResponseEntity<Map<String, Object>> responseNotAuthenticated (String message) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of(
+                        "authenticated", false,
+                        "message", message));
+    }
     public static ResponseEntity<Map<String, Object>> responseOK (String message) {
         return ResponseEntity.ok().body(Map.of(
                 "status", "process completed",

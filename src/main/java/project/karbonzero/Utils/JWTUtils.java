@@ -55,18 +55,6 @@ public class JWTUtils {
                 .compact();                                             /// Convierte a String compacto
     }
 
-
-    public String extractTokenFromRequest(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("authToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
     /// Extraemos el status de nuestro token 0,1,2,3,4,5 los que existan, ahorita solo 0,1,2
     public Integer extractStatus(String token){
         Claims claims = parseToken(token);

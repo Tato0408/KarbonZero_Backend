@@ -15,21 +15,20 @@ public class AuthService {
     private UserRepository repo;
 
     ///Metodo de logIn
-    public boolean LogIn(String email, String password){
-        Argon2PasswordEncoder argon = new Argon2PasswordEncoder();
-        Optional<UserEntity> userOptional = repo.findOptionalByEmail(email);
-        if(userOptional.isPresent()){
-            UserEntity user = userOptional.get();
-            int role = user.getIdRol().getStatus();
-            System.out.println("USER ENCONTRADO "+ user.getEmail() + " "+user.getUsername() + " "+role);
-            return  argon.decodePassword(user.getUserPassword() ,password);
+    public boolean Login (String email, String password) {
+        Argon2PasswordEncoder objHash = new Argon2PasswordEncoder();
+        UserEntity user = repo.findByEmail(email);
+
+        if (user != null) {
+            return objHash.decodePassword(user.getUserPassword(), password);
         }
         return false;
     }
 
     public Optional<UserEntity> getUser(String email){
+        // Buscar usuario completo en la base de datos
         Optional<UserEntity> userOpt = repo.findOptionalByEmail(email);
-        return (userOpt.isPresent()) ? userOpt : Optional.empty();
+        return (userOpt != null) ? userOpt : null;
     }
 
 }

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 public class JwtCookieAuthFilter extends OncePerRequestFilter{
@@ -41,7 +42,6 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter{
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        // CORREGIDO: Mejor lógica para endpoints públicos
         if (isPublicEndpoint(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -51,9 +51,9 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter{
             String token = extractTokenFromCookies(request);
 
             if (token == null || token.isBlank()) {
-                // Para endpoints no públicos, requerimos token
+                /// Para endpoints no públicos, requerimos token
                 if (!isPublicEndpoint(request)) {
-                    sendError(response, "Token no encontrado", HttpServletResponse.SC_UNAUTHORIZED);
+                    sendError(response, "Token no encontrado", HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
                 filterChain.doFilter(request, response);
@@ -61,23 +61,19 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter{
             }
 
             Claims claims = jwtUtils.parseToken(token);
-
-            // EXTRAER EL ROL REAL del token
             Integer status = jwtUtils.extractStatus(token);
-
-            // CREAR AUTHORITIES BASADO EN EL ROL REAL
             Collection<? extends GrantedAuthority> authorities =
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + status));
 
-            // CREAR AUTENTICACIÓN CON AUTHORITIES CORRECTOS
+            /// CREAR AUTENTICACIÓN CON AUTHORITIES CORRECTOS
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             claims.getSubject(), // username
                             null, // credentials
-                            authorities // ← ROLES REALES
+                            authorities
                     );
 
-            // ESTABLECER AUTENTICACIÓN EN CONTEXTO
+            /// ESTABLECER AUTENTICACIÓN EN CONTEXTO
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request, response);
@@ -112,13 +108,12 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter{
                 "{\"error\": \"%s\", \"status\": %d}", message, status));
     }
 
-    // MEJORADA: Lógica para endpoints públicos
     private boolean isPublicEndpoint(HttpServletRequest request) {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // Endpoints públicos
-        return (path.equals("/apiAuth/login") && "POST".equals(method)) ||
-                (path.equals("/api/public/") && "GET".equals(method));
+        /// Endpoints públicos
+        return (path.equals("/apiAuth/login") && "POST".equals(method) ||
+                path.equals("/apiAuth/logout") && "POST".equals(method));
     }
 }
