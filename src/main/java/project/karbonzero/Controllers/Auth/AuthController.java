@@ -35,6 +35,25 @@ public class AuthController {
     @Autowired
     private JWTUtils jwtUtils;
 
+    // Las 2 funciones login devuelven tokens de diferente duración
+    // No mandamos la duración del token como parámetro porque podría darnos más problemas de seguridad
+
+    @PostMapping("/shortLogin")
+    private ResponseEntity<Map<String, Object>> shortLogin (@RequestBody UserDTO data, HttpServletResponse response) {
+        if (data.getEmail() == null || data.getEmail().isBlank()) {
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+        if (data.getUserPassword() == null || data.getUserPassword().isBlank()) {
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+
+        if (service.Login(data.getEmail(), data.getUserPassword())) {
+            addTokenCookie(response, data.getEmail(), 3600);
+            return Responses.responseOK("Inicio de sesión exitoso");
+        }
+        return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+    }
+
     @PostMapping("/login")
     private ResponseEntity<Map<String, Object>> login (@RequestBody UserDTO data, HttpServletResponse response) {
         if (data.getEmail() == null || data.getEmail().isBlank()) {
@@ -45,13 +64,13 @@ public class AuthController {
         }
 
         if (service.Login(data.getEmail(), data.getUserPassword())) {
-            addTokenCookie(response, data.getEmail());
+            addTokenCookie(response, data.getEmail(), 86400);
             return Responses.responseOK("Inicio de sesión exitoso");
         }
         return Responses.responseNotAuthenticated("Error, credenciales inválidas");
     }
 
-    private void addTokenCookie (HttpServletResponse response, String email) {
+    private void addTokenCookie (HttpServletResponse response, String email, Integer maxAge) {
         Optional<UserEntity> userOpt = service.getUser(email);
 
         if (userOpt.isPresent()) {
