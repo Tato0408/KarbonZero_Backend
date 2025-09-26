@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource)) // ← Configura CORS aquí
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/apiAuth/login", "/apiAuth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/apiAuth/login", "/apiAuth/shortLogin", "/apiAuth/logout").permitAll()
                         /// Aca van los que piden auth
                         .requestMatchers("/apiAuth/me").authenticated()
                         ///Usuarios
@@ -108,6 +108,8 @@ public class SecurityConfig {
                         .requestMatchers("/apiUser/updateRol/{id}").hasAnyRole("1", "0")
                         .requestMatchers("/apiUser/deleteUser/{id}").hasAnyRole("1", "0")
                         .requestMatchers("/apiUser/deleteRol/{id}").hasAnyRole("1", "0")
+                        .requestMatchers("/apiUser/updateDisabled/{id}").hasAnyRole("1", "0")
+
                         /// Claudinary
                         .requestMatchers("/api/image/upload").hasAnyRole("1", "0")
                         .requestMatchers("/api/image/upload-to-folder").hasAnyRole("1", "0")
