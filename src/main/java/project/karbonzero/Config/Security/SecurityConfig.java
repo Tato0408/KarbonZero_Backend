@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/apiAuth/me").authenticated()
                         ///Usuarios
                         .requestMatchers("/apiUser/getAllUsers").hasAnyRole("1", "0")
-                        .requestMatchers("/apiUser/getAllRoles").hasAnyRole("2","0")
+                        .requestMatchers("/apiUser/getAllRoles").hasAnyRole("1","0")
                         /// Consumos
                         .requestMatchers("/apiConsumption/getAllConsumptions").hasAnyRole("1", "0")
                         .requestMatchers("/apiConsumption/getConsumptionById/{id}").hasAnyRole("1", "0")

@@ -33,7 +33,7 @@ public class UserDTO {
 
     @NotBlank
     private String email;
-    @NotBlank
+
     private String userPassword;
 
     private String imageProfile;
