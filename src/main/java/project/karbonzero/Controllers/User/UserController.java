@@ -103,6 +103,17 @@ public class UserController {
         return rolService.getAllRoles(page, size);
     }
 
+    @GetMapping("/getRolesByName/{name}")
+    public Page<RolDTO> getRolesByName (@PathVariable String name,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+
+        return rolService.getRolesByName(name, page, size);
+    }
+
     @GetMapping("/getRolById/{id}")
     public RolDTO getRolById (@PathVariable String id) {
         return rolService.getRolById(id);
