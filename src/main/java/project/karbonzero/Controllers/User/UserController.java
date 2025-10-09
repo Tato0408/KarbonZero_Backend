@@ -21,7 +21,6 @@ import java.util.Map;
 import static project.karbonzero.Utils.Responses.*;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/apiUser")
 public class UserController {
 
@@ -35,15 +34,6 @@ public class UserController {
                                                       @RequestParam String password) {
         HashMap<String, Boolean> answer = new HashMap<>();
         answer.put("authenticated", userService.confirmPassword(idUser, password));
-        return answer;
-    }
-
-    @PostMapping("/loginUser")
-    public HashMap<String, Boolean> loginUser (@RequestParam String email,
-                              @RequestParam String password) {
-
-        HashMap<String, Boolean> answer = new HashMap<>();
-        answer.put("authenticated", userService.loginUser(email, password));
         return answer;
     }
 
