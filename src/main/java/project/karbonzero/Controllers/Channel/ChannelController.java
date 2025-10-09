@@ -11,8 +11,58 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/apiChannel")
 public class ChannelController {
 
+    @GetMapping("/getChannel")
+    private ResponseEntity<?> getChannel (HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if ("channelToken".equals(cookie.getName())) {
+                headers.set("Cookie", "channelToken=" + cookie.getValue());
+                break;
+            }
+        }
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        Dotenv dotenv = Dotenv.load();
+        return restTemplate.exchange(
+                dotenv.get("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/getChannelByApiKey/" + dotenv.get("EXTERNAL_API_KEY"),
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+    }
+
+    @GetMapping("/getChannelPostApproved")
+    private ResponseEntity<?> getChannelPostApproved (HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if ("channelToken".equals(cookie.getName())) {
+                headers.set("Cookie", "channelToken=" + cookie.getValue());
+                break;
+            }
+        }
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        Dotenv dotenv = Dotenv.load();
+        return restTemplate.exchange(
+                dotenv.get("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/getChannelPostApproved/" + dotenv.get("EXTERNAL_API_KEY"),
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
+    }
+
     @GetMapping("/getChannelPostNoApproved")
-    private ResponseEntity<?> getChannelPost (HttpServletRequest request) {
+    private ResponseEntity<?> getChannelPostNoApproved (HttpServletRequest request) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
