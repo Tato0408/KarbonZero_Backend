@@ -16,7 +16,6 @@ public class UserDTO {
     private String idRol;
     private String nameRol;
 
-    @NotNull
     @Min(0)
     private Integer status;
 
