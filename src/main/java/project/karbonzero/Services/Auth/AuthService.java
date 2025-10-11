@@ -32,4 +32,7 @@ public class AuthService {
         return (userOpt != null) ? userOpt : null;
     }
 
+    public UserEntity getUserRecoveryPassword (String email ) {
+        return repo.findByEmail((email));
+    }
 }

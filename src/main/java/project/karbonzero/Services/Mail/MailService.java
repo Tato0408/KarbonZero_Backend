@@ -31,4 +31,22 @@
             //Envia el correo usando javaMailSender
             javaMailSender.send(message);
         }
+        public boolean sendRecoveryCode(String toEmail, String code) {
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(toEmail);
+                message.setSubject("Código de recuperación de contraseña");
+                message.setText("Hola,\n\n" +
+                        "Tu código de recuperación de contraseña es:\n\n" +
+                        code + "\n\n" +
+                        "Ingresa este código en la app para restablecer tu contraseña.\n\n" +
+                        "Saludos,\nKarbon Zero Admins.");
+
+                javaMailSender.send(message);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
     }
