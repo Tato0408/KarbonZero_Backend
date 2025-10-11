@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import project.karbonzero.Models.DTO.Mail.ChannelDTO;
 
 @RestController
 @RequestMapping("/apiChannel")
@@ -31,6 +32,31 @@ public class ChannelController {
         return restTemplate.exchange(
                 dotenv.get("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/getChannelByApiKey/" + dotenv.get("EXTERNAL_API_KEY"),
                 HttpMethod.GET,
+                entity,
+                String.class
+        );
+    }
+
+    @PutMapping("/updateChannel")
+    private ResponseEntity<?> updateChannel (@RequestBody ChannelDTO dto, HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if ("channelToken".equals(cookie.getName())) {
+                headers.set("Cookie", "channelToken=" + cookie.getValue());
+                break;
+            }
+        }
+        HttpEntity<ChannelDTO> entity = new HttpEntity<>(dto, headers);
+
+        Dotenv dotenv = Dotenv.load();
+        return restTemplate.exchange(
+                dotenv.get("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/updateChannelByApiKey/" + dotenv.get("EXTERNAL_API_KEY"),
+                HttpMethod.PUT,
                 entity,
                 String.class
         );
