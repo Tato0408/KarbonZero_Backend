@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource)) // ← Configura CORS aquí
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/apiAuth/login", "/apiAuth/shortLogin", "/apiAuth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/apiAuth/login", "/apiAuth/shortLogin", "/apiAuth/logout", "/apiAuth/forgotPassword", "/apiAuth/verifyCode").permitAll()
                         /// Aca van los que piden auth
                         .requestMatchers("/apiAuth/me").authenticated()
                         ///Usuarios
