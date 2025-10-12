@@ -1,18 +1,17 @@
 package project.karbonzero.Controllers.Auth;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import project.karbonzero.Entities.User.UserEntity;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Services.Auth.AuthService;
@@ -68,6 +67,26 @@ public class AuthController {
             return Responses.responseOK("Inicio de sesión exitoso");
         }
         return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+    }
+
+    @PostMapping("/loginCompany")
+    private ResponseEntity<?> loginCompany (HttpServletResponse response) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        Dotenv dotenv = Dotenv.load();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-API-Key", dotenv.get("EXTERNAL_API_KEY")); // Header personalizado
+        headers.set("X-Company-Domain", dotenv.get("EXTERNAL_DOMAIN"));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        return restTemplate.exchange(
+                "http://localhost:8081" + "/apiAuth/authenticateCompany",
+                HttpMethod.POST,
+                entity,
+                String.class
+        );
     }
 
     private void addTokenCookie (HttpServletResponse response, String email, Integer maxAge) {
@@ -149,6 +168,32 @@ public class AuthController {
                             "message", "Error obteniendo datos de usuario"
                     ));
         }
+    }
+
+    @GetMapping("/company")
+    private ResponseEntity<?> company (HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if ("channelToken".equals(cookie.getName())) {
+                headers.set("Cookie", "channelToken=" + cookie.getValue());
+                break;
+            }
+        }
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        Dotenv dotenv = Dotenv.load();
+        return restTemplate.exchange(
+                dotenv.get("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/company",
+                HttpMethod.GET,
+                entity,
+                String.class
+        );
     }
 
     @PostMapping("/logout")

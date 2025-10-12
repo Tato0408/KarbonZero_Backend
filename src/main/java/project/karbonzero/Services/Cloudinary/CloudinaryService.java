@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 public class CloudinaryService {
 
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
     private static final String[] ALLOWED_EXTENSIONS = {".jpg",".png",".jpeg"};
     private final Cloudinary cloudinary;
 
