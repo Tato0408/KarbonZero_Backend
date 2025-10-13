@@ -46,24 +46,22 @@ public class PasswordRecoveryService {
     }
 
     // Verificar código
-    public boolean verifyCode(String code) {
-        // Buscar en todos los códigos almacenados
+    public String verifyCode(String code) {
         for (Map.Entry<String, CodeEntry> entry : codes.entrySet()) {
             CodeEntry stored = entry.getValue();
 
-            // Si coincide el código
             if (stored.code.equals(code)) {
-                // Validar expiración
                 if (Instant.now().isAfter(stored.expiresAt)) {
                     codes.remove(entry.getKey());
-                    return false; // código expirado
+                    return null; // código expirado
                 }
 
-                // Si es válido, lo eliminamos para que sea de un solo uso
+                // Código válido, eliminarlo (de un solo uso)
+                String idUser = entry.getKey();
                 codes.remove(entry.getKey());
-                return true;
+                return idUser;
             }
         }
-        return false; // no se encontró ese código
+        return null; // no se encontró ese código
     }
 }

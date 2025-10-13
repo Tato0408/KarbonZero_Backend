@@ -188,14 +188,17 @@ public class AuthController {
     public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> body) {
         String code = body.get("code");
 
-        boolean valid = passwordRecoveryService.verifyCode(code);
+        String idUser = passwordRecoveryService.verifyCode(code);
 
-        if (!valid) {
+        if (idUser == null) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "Código inválido o expirado"));
         }
 
-        return ResponseEntity.ok(Map.of("message", "Código válido"));
+        return ResponseEntity.ok(Map.of(
+                "message", "Código válido",
+                "idUser", idUser
+        ));
     }
 }
