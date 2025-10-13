@@ -22,6 +22,12 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost");
         config.addAllowedOrigin("https://localhost");
         config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("http://localhost");
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
+
+        /// Métodos HTTP permitidos
+        config.addAllowedMethod("GET");
 
         /// Métodos HTTP permitidos
         config.addAllowedMethod("GET");
@@ -64,6 +70,9 @@ public class CorsConfig {
         configuration.addAllowedOrigin("https://localhost");
         configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedOrigin("http://localhost");
+        configuration.addAllowedOrigin("https://*.herokuapp.com");
+        configuration.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
+
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
 

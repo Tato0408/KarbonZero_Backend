@@ -1,6 +1,5 @@
 package project.karbonzero.Controllers.Auth;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -78,10 +77,9 @@ public class AuthController {
     private ResponseEntity<?> loginCompany (HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
 
-        Dotenv dotenv = Dotenv.load();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-API-Key", dotenv.get("EXTERNAL_API_KEY")); // Header personalizado
-        headers.set("X-Company-Domain", dotenv.get("EXTERNAL_DOMAIN"));
+        headers.set("X-API-Key", System.getenv("EXTERNAL_API_KEY")); // Header personalizado
+        headers.set("X-Company-Domain", System.getenv("EXTERNAL_DOMAIN"));
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -106,12 +104,19 @@ public class AuthController {
                     user.getIdRol().getStatus()
             );
 
-            Cookie cookie = new Cookie("authToken", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(86400);
-            response.addCookie(cookie);
+            String cookieValue = String.format(
+                    "channelToken=%s; " +
+                            "Path=/; " +
+                            "HttpOnly; " +
+                            "Secure; " +
+                            "SameSite=None; " +
+                            "MaxAge=86400; " +
+                            "Domain=karbonzero-institutional-26727f445378.herokuapp.com",
+                    token
+            );
+
+            response.addHeader("Set-Cookie", cookieValue);
+            response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
         }
     }
 
@@ -192,9 +197,8 @@ public class AuthController {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        Dotenv dotenv = Dotenv.load();
         return restTemplate.exchange(
-                dotenv.get("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/company",
+                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/company",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -204,8 +208,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request, HttpServletResponse response) {
         // Crear cookie de expiración con SameSite=None
-        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=localhost";
-
+        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=karbonzero-institutional-26727f445378.herokuapp.com";
         response.addHeader("Set-Cookie", cookieValue);
         //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
         response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
