@@ -103,8 +103,7 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-			<version>3.3.4</version> <!-- Usa la misma versión de tu Spring Boot -->
+			<artifactId>spring-boot-starter-mail</artifactId> 
 		</dependency>
 
 		<!-- Dependencia principal de JJWT (API) Contiene las interfaces y clases principales.-->
