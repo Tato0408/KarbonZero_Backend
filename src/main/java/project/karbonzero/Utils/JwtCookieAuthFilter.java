@@ -112,9 +112,20 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter{
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        /// Endpoints públicos
-        return (path.equals("/apiAuth/login") && "POST".equals(method) ||
-                path.equals("/apiAuth/shortLogin") && "POST".equals(method) ||
-                path.equals("/apiAuth/logout") && "POST".equals(method));
+        // Endpoints públicos
+        if ("POST".equals(method) && (path.equals("/apiAuth/login")
+                || path.equals("/apiAuth/shortLogin")
+                || path.equals("/apiAuth/logout")
+                || path.equals("/apiAuth/forgotPassword")
+                || path.equals("/apiAuth/verifyCode"))) {
+            return true;
+        }
+
+        // Endpoint PUT para actualizar contraseña olvidada
+        if ("PUT".equals(method) && path.startsWith("/apiUser/updateUserPassword/")) {
+            return true;
+        }
+
+        return false;
     }
 }

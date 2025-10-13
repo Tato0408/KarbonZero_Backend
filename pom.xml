@@ -103,7 +103,7 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
+			<artifactId>spring-boot-starter-mail</artifactId> 
 		</dependency>
 
 		<!-- Dependencia principal de JJWT (API) Contiene las interfaces y clases principales.-->

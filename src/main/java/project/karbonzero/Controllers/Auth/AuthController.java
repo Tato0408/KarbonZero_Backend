@@ -13,8 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import project.karbonzero.Entities.User.UserEntity;
+import project.karbonzero.Models.DTO.ForgotPasswordDTO;
 import project.karbonzero.Models.DTO.UserDTO;
 import project.karbonzero.Services.Auth.AuthService;
+import project.karbonzero.Services.Auth.PasswordRecoveryService;
 import project.karbonzero.Services.User.UserService;
 import project.karbonzero.Utils.JWTUtils;
 import project.karbonzero.Utils.Responses;
@@ -33,6 +35,9 @@ public class AuthController {
 
     @Autowired
     private JWTUtils jwtUtils;
+
+    @Autowired
+    private PasswordRecoveryService passwordRecoveryService;
 
     // Las 2 funciones login devuelven tokens de diferente duración
     // No mandamos la duración del token como parámetro porque podría darnos más problemas de seguridad
@@ -214,4 +219,31 @@ public class AuthController {
         return Responses.responseOK("logout exitoso");
     }
 
+    //ENDPOINTS DE RECUPERACION DE CONTRASEÑA
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDTO dto) {
+        boolean sent = passwordRecoveryService.generateAndSendCode(dto.getEmail());
+        if (!sent) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Correo no registrado"));
+        }
+        return ResponseEntity.ok(Map.of("message", "Código enviado"));
+    }
+
+    @PostMapping("/verifyCode")
+    public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> body) {
+        String code = body.get("code");
+
+        String idUser = passwordRecoveryService.verifyCode(code);
+
+        if (idUser == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Código inválido o expirado"));
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Código válido",
+                "idUser", idUser
+        ));
+    }
 }

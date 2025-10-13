@@ -180,6 +180,18 @@ public class UserService {
             throw new UpdateException("The User with the ID: " + id + " can't be blocked");
         }
     }
+    public void updateUserPassword(String id, String newPassword) {
+        if (!repo.existsById(id)) {
+            throw new BadIdException("El usuario con ID " + id + " no existe");
+        }
+
+        UserEntity entity = repo.getReferenceById(id);
+
+        Argon2PasswordEncoder encoder = new Argon2PasswordEncoder();
+        entity.setUserPassword(encoder.HashPassword(newPassword));
+
+        repo.save(entity);
+    }
 
     public UserDTO UserToDTO(UserEntity entity) {
         UserDTO dto = new UserDTO();

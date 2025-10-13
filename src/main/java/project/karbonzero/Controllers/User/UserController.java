@@ -222,4 +222,17 @@ public class UserController {
             return responseServerError(e, "Cannot block the user object");
         }
     }
+
+    @PutMapping("/updateUserPassword/{id}")
+    public ResponseEntity<?> updateUserPassword(@PathVariable String id, @RequestBody Map<String, String> body) {
+        String newPassword = body.get("passwordUser");
+
+        if (newPassword == null || newPassword.isBlank()) {
+            return ResponseEntity.badRequest().body("La nueva contraseña no puede estar vacía");
+        }
+
+        userService.updateUserPassword(id, newPassword);
+        return ResponseEntity.ok("Contraseña actualizada correctamente");
+    }
+
 }
