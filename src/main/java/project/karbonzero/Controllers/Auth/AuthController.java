@@ -105,7 +105,7 @@ public class AuthController {
             );
 
             String cookieValue = String.format(
-                    "channelToken=%s; " +
+                    "authToken=%s; " +
                             "Path=/; " +
                             "HttpOnly; " +
                             "Secure; " +
