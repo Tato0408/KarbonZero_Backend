@@ -92,19 +92,28 @@ public class AuthController {
                 String.class
         );
 
-        // Reenviar todas las cookies al cliente
+        // Reenviar todas las cookies tal cual
         List<String> cookies = externalResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
-        if (cookies != null) {
+        if (cookies != null && !cookies.isEmpty()) {
+            // Si hay varias, usa addHeader para preservar todas
+            response.setHeader("Set-Cookie", null); // opcional para limpiar
             for (String cookie : cookies) {
-                response.setHeader(HttpHeaders.SET_COOKIE, cookie);
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie);
             }
         }
 
-        // Renviar el cuerpo y el código de estado
+        // Asegura que el navegador pueda ver esta cabecera
+        response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+
+        // Evitar cache
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+
         return ResponseEntity
                 .status(externalResponse.getStatusCode())
                 .body(externalResponse.getBody());
     }
+
 
     private void addTokenCookie (HttpServletResponse response, String email, Integer maxAge) {
         Optional<UserEntity> userOpt = service.getUser(email);
