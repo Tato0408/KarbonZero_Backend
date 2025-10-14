@@ -87,7 +87,7 @@ public class ResourceService {
         resourcePurityEntities.forEach(x -> {
             List<ConsumptionEntity> consumptionEntities = x.getConsumptionsList();
             consumptionEntities.forEach(y -> {
-                mergedAnswer.put(y.getConsumptionDate(),
+                mergedAnswer.put(y.getConsumptionDate().toString(),
                         (y.getQuantity() * y.getIdResourcePurity().getPurity() * y.getIdResourcePurity().getIdResource().getCarbonFootprint()));
             });
         });

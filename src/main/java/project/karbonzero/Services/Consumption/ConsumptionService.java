@@ -20,6 +20,7 @@ import project.karbonzero.Repositories.Resource.ResourceRepository;
 import project.karbonzero.Repositories.User.UserRepository;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -79,20 +80,25 @@ public class ConsumptionService {
                 .collect(Collectors.toList());
 
         if (year == 0) {
-            return repo.findByIdResourcePurityIn(resourcePurities, pageable).map(this::ConsumptionToDTO);
+            return repo.findByIdResourcePurityIn(resourcePurities, pageable)
+                    .map(this::ConsumptionToDTO);
         }
 
-        String initialDate;
-        String finalDate;
+        LocalDate initialDate;
+        LocalDate finalDate;
+
         if (month != 0) {
-                initialDate = "01/" + month + "/" + year;
-                finalDate = "01/" + (month + 1) + "/" + year;
+            YearMonth ym = YearMonth.of(year, month);
+            initialDate = ym.atDay(1);
+            finalDate   = ym.plusMonths(1).atDay(1);
         } else {
-                initialDate = "01/01/" + year;
-                finalDate = "01/01/" + (year + 1);
+            initialDate = LocalDate.of(year, 1, 1);
+            finalDate   = LocalDate.of(year + 1, 1, 1);
         }
 
-        return repo.findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc(resourcePurities, initialDate, finalDate, pageable).map(this::ConsumptionToDTO);
+        return repo.findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc(
+                        resourcePurities, initialDate, finalDate, pageable)
+                .map(this::ConsumptionToDTO);
     }
 
     public List<ConsumptionDTO> getConsumptionsByFiltersMonth(String name, String start, String end) {
@@ -108,7 +114,14 @@ public class ConsumptionService {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        return repo.findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc(resourcePurities, start, end).stream().map(this::ConsumptionToDTO).collect(Collectors.toList());
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate   = LocalDate.parse(end);
+
+        return repo.findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc(
+                        resourcePurities, startDate, endDate)
+                .stream()
+                .map(this::ConsumptionToDTO)
+                .collect(Collectors.toList());
     }
     public Double getConsumptionCO2 (String id) {
         ConsumptionEntity entity = repo.getReferenceById(id);
