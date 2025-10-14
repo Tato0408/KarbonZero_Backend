@@ -22,6 +22,7 @@ import project.karbonzero.Utils.Responses;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,22 +75,35 @@ public class AuthController {
     }
 
     @PostMapping("/loginCompany")
-    private ResponseEntity<?> loginCompany (HttpServletResponse response) {
+    private ResponseEntity<?> loginCompany(HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-API-Key", System.getenv("EXTERNAL_API_KEY")); // Header personalizado
+        headers.set("X-API-Key", System.getenv("EXTERNAL_API_KEY"));
         headers.set("X-Company-Domain", System.getenv("EXTERNAL_DOMAIN"));
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        return restTemplate.exchange(
+        ResponseEntity<String> externalResponse = restTemplate.exchange(
                 System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/authenticateCompany",
                 HttpMethod.POST,
                 entity,
                 String.class
         );
+
+        // Reenviar todas las cookies al cliente
+        List<String> cookies = externalResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
+        if (cookies != null) {
+            for (String cookie : cookies) {
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie);
+            }
+        }
+
+        // Renviar el cuerpo y el código de estado
+        return ResponseEntity
+                .status(externalResponse.getStatusCode())
+                .body(externalResponse.getBody());
     }
 
     private void addTokenCookie (HttpServletResponse response, String email, Integer maxAge) {
