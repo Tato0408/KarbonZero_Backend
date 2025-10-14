@@ -96,7 +96,7 @@ public class AuthController {
         List<String> cookies = externalResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
         if (cookies != null) {
             for (String cookie : cookies) {
-                response.addHeader(HttpHeaders.SET_COOKIE, cookie);
+                response.setHeader(HttpHeaders.SET_COOKIE, cookie);
             }
         }
 
