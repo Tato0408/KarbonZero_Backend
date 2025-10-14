@@ -85,7 +85,7 @@ public class AuthController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                "http://localhost:8081" + "/apiAuth/authenticateCompany",
+                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/authenticateCompany",
                 HttpMethod.POST,
                 entity,
                 String.class
