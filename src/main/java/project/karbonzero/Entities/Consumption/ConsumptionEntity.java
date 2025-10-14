@@ -1,5 +1,6 @@
 package project.karbonzero.Entities.Consumption;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import project.karbonzero.Entities.Resource.ResourcePurityEntity;
 import project.karbonzero.Entities.User.UserEntity;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "TBCONSUMPTIONS")
@@ -31,8 +34,9 @@ public class ConsumptionEntity {
     @Column(name = "QUANTITY", nullable = false)
     private Double quantity;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "CONSUMPTIONDATE", nullable = false)
-    private String consumptionDate;
+    private LocalDate consumptionDate;
 
     @Column(name = "COST", nullable = false)
     private Double cost;

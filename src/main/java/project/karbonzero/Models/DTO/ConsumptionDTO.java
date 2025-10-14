@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+
 
 @ToString
 @EqualsAndHashCode
@@ -27,9 +29,8 @@ public class ConsumptionDTO {
     @NotNull
     private Double quantity;
 
-    @NotBlank()
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private String consumptionDate;
+    private LocalDate consumptionDate;
 
     @PositiveOrZero
     @NotNull

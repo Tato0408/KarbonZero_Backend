@@ -15,9 +15,8 @@ import java.util.List;
 public interface ConsumptionRepository extends JpaRepository<ConsumptionEntity, String> {
     Page<ConsumptionEntity> findAllByOrderByConsumptionDateDesc(Pageable page);
     Page<ConsumptionEntity> findByIdResourcePurityIn (List<ResourcePurityEntity> resourcePuritiesId, Pageable pageable);
-    Page<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc (List<ResourcePurityEntity> resourcePuritiesId, String start, String end, Pageable pageable);
-    List<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc (List<ResourcePurityEntity> resourcePuritiesId, String start, String end);
-
+    Page<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc (List<ResourcePurityEntity> resourcePuritiesId, LocalDate  start, LocalDate  end, Pageable pageable);
+    List<ConsumptionEntity> findByIdResourcePurityInAndConsumptionDateBetweenOrderByConsumptionDateDesc (List<ResourcePurityEntity> resourcePuritiesId, LocalDate  start, LocalDate  end);
 
 
 }
