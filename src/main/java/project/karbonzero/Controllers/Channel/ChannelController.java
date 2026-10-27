@@ -2,6 +2,7 @@ package project.karbonzero.Controllers.Channel;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -10,6 +11,11 @@ import project.karbonzero.Models.DTO.Mail.ChannelDTO;
 @RestController
 @RequestMapping("/apiChannel")
 public class ChannelController {
+    @Value("${EXTERNAL_ADMIN_DOMAIN:}")
+    private String externalAdminDomain;
+    @Value("${EXTERNAL_API_KEY}")
+    private String externalApiKey;
+
 
     @GetMapping("/getChannel")
     private ResponseEntity<?> getChannel (HttpServletRequest request) {
@@ -28,7 +34,7 @@ public class ChannelController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/getChannelByApiKey/" + System.getenv("EXTERNAL_API_KEY"),
+                externalAdminDomain + "/apiCompany/getChannelByApiKey/" + externalApiKey,
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -52,7 +58,7 @@ public class ChannelController {
         HttpEntity<ChannelDTO> entity = new HttpEntity<>(dto, headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/updateChannelByApiKey/" + System.getenv("EXTERNAL_API_KEY"),
+                externalAdminDomain + "/apiCompany/updateChannelByApiKey/" + externalApiKey,
                 HttpMethod.PUT,
                 entity,
                 String.class
@@ -76,7 +82,7 @@ public class ChannelController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/getChannelPostApproved/" + System.getenv("EXTERNAL_API_KEY"),
+                externalAdminDomain + "/apiCompany/getChannelPostApproved/" + externalApiKey,
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -101,7 +107,7 @@ public class ChannelController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/getChannelPostNoApproved/" + System.getenv("EXTERNAL_API_KEY"),
+                externalAdminDomain + "/apiCompany/getChannelPostNoApproved/" + externalApiKey,
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -126,7 +132,7 @@ public class ChannelController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/approvePost/" + id,
+                externalAdminDomain + "/apiCompany/approvePost/" + id,
                 HttpMethod.PUT,
                 entity,
                 String.class
@@ -151,7 +157,7 @@ public class ChannelController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiCompany/deleteChannelPost/" + id,
+                externalAdminDomain + "/apiCompany/deleteChannelPost/" + id,
                 HttpMethod.DELETE,
                 entity,
                 String.class

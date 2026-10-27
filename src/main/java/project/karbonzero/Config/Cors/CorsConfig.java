@@ -25,6 +25,8 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost");
         config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
+        // Desarrollo local: cualquier puerto de localhost (los frontends de Vite usan 5173, 5174, ...)
+        config.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "http://127.0.0.1:*"));
 
         /// Métodos HTTP permitidos
         config.addAllowedMethod("GET");
@@ -72,6 +74,8 @@ public class CorsConfig {
         configuration.addAllowedOrigin("http://localhost");
         configuration.addAllowedOrigin("https://*.herokuapp.com");
         configuration.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
+        // Desarrollo local: cualquier puerto de localhost (los frontends de Vite usan 5173, 5174, ...)
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:*", "http://127.0.0.1:*"));
 
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");

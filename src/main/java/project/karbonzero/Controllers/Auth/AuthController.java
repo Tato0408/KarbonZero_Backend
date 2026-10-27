@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +31,22 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/apiAuth")
 public class AuthController {
+    // Dominio de la cookie de sesión. Vacío en local (la cookie queda ligada a localhost);
+    // en producción se define con la variable COOKIE_DOMAIN.
+    @Value("${COOKIE_DOMAIN:}")
+    private String cookieDomain;
+
+    private String cookieDomainAttribute() {
+        return (cookieDomain == null || cookieDomain.isBlank()) ? "" : "; Domain=" + cookieDomain;
+    }
+
+    @Value("${EXTERNAL_ADMIN_DOMAIN:}")
+    private String externalAdminDomain;
+    @Value("${EXTERNAL_API_KEY}")
+    private String externalApiKey;
+    @Value("${EXTERNAL_DOMAIN}")
+    private String externalDomain;
+
     @Autowired
     private AuthService service;
 
@@ -79,14 +96,14 @@ public class AuthController {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-API-Key", System.getenv("EXTERNAL_API_KEY"));
-        headers.set("X-Company-Domain", System.getenv("EXTERNAL_DOMAIN"));
+        headers.set("X-API-Key", externalApiKey);
+        headers.set("X-Company-Domain", externalDomain);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> externalResponse = restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/authenticateCompany",
+                externalAdminDomain + "/apiAuth/authenticateCompany",
                 HttpMethod.POST,
                 entity,
                 String.class
@@ -133,8 +150,8 @@ public class AuthController {
                             "HttpOnly; " +
                             "Secure; " +
                             "SameSite=None; " +
-                            "Max-Age=86400; " +
-                            "Domain=karbonzero-institutional-26727f445378.herokuapp.com",
+                            "Max-Age=86400" +
+                            cookieDomainAttribute(),
                     token
             );
 
@@ -221,7 +238,7 @@ public class AuthController {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(
-                System.getenv("EXTERNAL_ADMIN_DOMAIN") + "/apiAuth/company",
+                externalAdminDomain + "/apiAuth/company",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -231,7 +248,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request, HttpServletResponse response) {
         // Crear cookie de expiración con SameSite=None
-        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=karbonzero-institutional-26727f445378.herokuapp.com";
+        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0" + cookieDomainAttribute();
         response.addHeader("Set-Cookie", cookieValue);
         //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
         response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
